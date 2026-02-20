@@ -28,3 +28,18 @@ def move_attributes_to_new_dimension(
     df_updated = df_attributes_to_keep.union(df_attributes_to_move)
 
     return df_updated
+
+
+def get_dimension_list_from_col(df, dimension_col_name):
+
+    df_unique_dimensions = (df
+        .select(dimension_col_name)
+        .distinct()
+    )
+
+    dimension_cols = [
+        row[dimension_col_name] 
+        for row in df_unique_dimensions.select(dimension_col_name).collect()
+    ]
+
+    return dimension_cols

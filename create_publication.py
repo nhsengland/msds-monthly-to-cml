@@ -33,7 +33,7 @@ from src.utils import logging_config
 from src.utils import spark as spark_utils
 from src.data_ingestion import get_data
 from src.data_ingestion import reading_data
-from src.processing import aggregate_counts
+from src.processing import processing
 from src.data_exports import write_csv
 
 logger = logging.getLogger(__name__)
@@ -56,18 +56,31 @@ def main():
     # Loading data from CSV as spark data frame
     df_maternity = reading_data.load_csv_into_spark_data_frame(spark, config['path_to_maternity_data'])
 
-    # Creating dictionary to hold outputs
-    outputs = {}
+    # mbrrace_groups = [
+    #     "GROUP 1. LEVEL 3 NEONATAL INTENSIVE CARE UNIT (NICU) AND NEONATAL SURGERY",
+    #     "GROUP 2. LEVEL 3 NICU",
+    #     "GROUP 3. 4,000 OR MORE BIRTHS PER ANNUM AT 24 WEEKS OR LATER",
+    #     "GROUP 4. 2,000 - 3,999 BIRTHS PER ANNUM AT 24 WEEKS OR LATER",
+    #     "GROUP 5. UNDER 2,000 BIRTHS PER ANNUM AT 24 WEEKS OR LATER",
+    # ]
+    # df_maternity = processing.move_attributes_to_new_dimension(
+    #     df_maternity,
+    #     'Dimension',
+    #     'england',
+    #     'MBRRACE Grouping',
+    #     'all_mbrrace_groupings',
+    #     mbrrace_groups
+    # )
+    
+    dimension_cols = processing.get_dimensions_from_col(df_maternity, "Dimension")
+    print(dimension_cols)
 
-    # Count number of episodes in England - place this in the outputs dictionary
-    outputs["df_hes_england_count"] = aggregate_counts.get_distinct_count(df_hes_data, 'epikey', 'number_of_episodes')
 
-    # Rename and save spark dataframes as CSVs:
-    for output_name, output in outputs.items():
-        write_csv.save_spark_dataframe_as_csv(output, output_name)
-        logger.info(f"saved output df {output_name} as csv")
-        write_csv.rename_csv_output(output_name)
-        logger.info(f"renamed {output_name} file")
+    # output_name = "output.csv"
+    # write_csv.save_spark_dataframe_as_csv(df_maternity, output_nameget_dimensions_from_col(df, dimension_col_name))
+    # logger.info(f"saved output df {output_name} as csv")
+    # write_csv.rename_csv_output(output_name)
+    # logger.info(f"renamed {output_name} file")
     
     # stop the spark session
     spark.stop()

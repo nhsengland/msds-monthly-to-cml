@@ -49,16 +49,12 @@ def main():
     logger.info(f"Logging the config settings:\n\n\t{config}\n")
     logger.info(f"Starting run at:\t{datetime.now().time()}")
 
-    # get artificial HES data as CSV
-    get_data.download_zip_from_url(config['data_url'], overwrite=True)
-    logger.info(f"Downloaded artificial hes as zip.")
-
     # create spark session
     spark = spark_utils.create_spark_session(config['project_name'])
     logger.info(f"created spark session with app name: {config['project_name']}")
 
     # Loading data from CSV as spark data frame
-    df_hes_data = reading_data.load_csv_into_spark_data_frame(spark, config['path_to_downloaded_data'])
+    df_maternity = reading_data.load_csv_into_spark_data_frame(spark, config['path_to_maternity_data'])
 
     # Creating dictionary to hold outputs
     outputs = {}

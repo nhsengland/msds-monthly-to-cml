@@ -54,3 +54,18 @@ def create_dimension_table(df, dimension_cols):
     )
 
     return df
+
+
+def get_dimension_list_from_col(df, dimension_col_name):
+
+    df_unique_dimensions = (df
+        .select(dimension_col_name)
+        .distinct()
+    )
+
+    dimension_cols = [
+        row[dimension_col_name] 
+        for row in df_unique_dimensions.select(dimension_col_name).collect()
+    ]
+
+    return dimension_cols

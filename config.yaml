@@ -1,0 +1,36 @@
+project_name: "maternity_to_cml"
+path_to_maternity_data: "data_in/msds-sep2025-exp-data.csv"
+output_dir: ""
+log_dir: "" 
+dimensions:
+  - AgeAtBookingMotherAvg
+  - AgeAtBookingMotherGroup
+  - ApgarScore5TermGroup7
+  - BabyFirstFeedBreastMilkStatus
+  - BirthweightTermGroup
+  - BirthweightTermGroup2500
+  - CCP_Antenatal
+  - CCP_Any_Pathways
+  - CCP_Birth
+  - CCP_Postpartum
+  - CO_Concentration_Delivery
+  - ComplexSocialFactorsInd
+  - DeliveryMethodBabyGroup
+  - DeprivationDecileAtBooking
+  - EthnicCategoryMotherGroup
+  - FolicAcidSupplement
+  - GestAgeFormalAntenatalBookingGroup
+  - GestationLengthBirth
+  - GestationLengthBirthGroup37
+  - PCP_Antenatal
+  - PCP_Any_Pathways
+  - PCP_Birth
+  - PCP_Postpartum
+  - PlaceTypeActualDeliveryMidwifery
+  - PreviousCaesareanSectionsGroup
+  - PreviousLiveBirthsGroup
+  - SkinToSkinContact1HourTerm
+  - SmokingStatusGroupBooking
+  - TotalBabies
+  - TotalBookings
+  - TotalDeliveries

@@ -1,0 +1,56 @@
+from pyspark.sql import functions as F
+import sys
+
+
+def create_dimension_columns(
+    df,
+    dimension_col_name,
+    attribute_col_name,
+    dimensions
+):
+    def _create_new_dim_col_expr(dimension):
+        return (   
+            F.when(F.col(dimension_col_name) == dimension, F.col(attribute_col_name))
+             .otherwise(F.concat(F.lit("all_"), F.litq(dimension) ))
+             .alias(dimension)
+        )
+
+    new_dimension_cols = []
+    for dimension in dimensions:
+
+        new_dimension_cols.append(
+            _create_new_dim_col_expr(dimension)
+        )
+
+    df = df.select("*", *new_dimension_cols)
+
+    return df
+
+
+def create_dimension_cohort_id_col(df, dimension_cols):
+    
+    df = df.withColumn(
+        "dimension_cohort_id",
+        F.concat_ws(
+            "|",
+            *[F.col(col) for col in dimension_cols]
+        )
+    )
+
+    return df
+
+
+def create_dimension_table(df, dimension_cols):
+    df = create_dimension_columns(
+        df,
+        "Dimension",
+        "Measure",
+        dimension_cols
+    )
+
+    df = create_dimension_cohort_id_col(
+        df,
+        dimension_cols
+    )
+
+    return df

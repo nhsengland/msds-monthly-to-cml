@@ -11,7 +11,7 @@ def create_dimension_columns(
     def _create_new_dim_col_expr(dimension):
         return (   
             F.when(F.col(dimension_col_name) == dimension, F.col(attribute_col_name))
-             .otherwise(F.concat(F.lit("all_"), F.litq(dimension) ))
+             .otherwise(F.concat(F.lit("all_"), F.lit(dimension) ))
              .alias(dimension)
         )
 

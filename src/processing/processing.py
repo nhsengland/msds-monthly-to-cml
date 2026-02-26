@@ -1,7 +1,17 @@
 from pyspark.sql import functions as F
 from pyspark import sql as pyspark
 
+PROCESSING_FUNC_REGISTRY = {}
 
+def register(func):
+    """
+    A decorator used to register a processing function.
+    """
+    PROCESSING_FUNC_REGISTRY[func.__name__] = func
+    return func
+
+
+@register
 def move_attributes_to_new_dimension(
     df, 
     existing_dimension_col_name,
@@ -30,16 +40,18 @@ def move_attributes_to_new_dimension(
     return df_updated
 
 
-def get_dimension_list_from_col(df, dimension_col_name):
+@register
+def rename_cols(df, col_name_mappings):
 
-    df_unique_dimensions = (df
-        .select(dimension_col_name)
-        .distinct()
-    )
+    current_cols = df.columns
+    new_cols = []
+    for current_col_name in current_cols:
+        if current_col_name not in col_name_mappings:
+            new_cols.append(current_col_name)
+        else:
+            new_cols.append(
+                F.col(current_col_name).alias(col_name_mappings[current_col_name])
+            )
 
-    dimension_cols = [
-        row[dimension_col_name] 
-        for row in df_unique_dimensions.select(dimension_col_name).collect()
-    ]
+    return df.select(*new_cols)
 
-    return dimension_cols

@@ -46,29 +46,40 @@ def test_move_attributes_to_new_dimension():
     assert df_actual.toPandas().equals(df_expected.toPandas())
     
 
-def test_get_dimension_list_from_col():
+def test_rename_cols():
     """
-    Tests get_dimension_list_from_col
+    Tests rename_cols
     """
     spark = spark_utils.create_spark_session('tests')
 
     test_data = [
-        ('1',),
-        ('2',),
-        ('2',),
-        ('A',),
-        ('A',),
-        ('A',),
-        ('A',),
+        ("1", "2", "3", "4", "5"),
+        ("1", "2", "3", "4", "5"),
+        ("1", "2", "3", "4", "5"),
+        ("1", "2", "3", "4", "5"),
     ]
-    test_cols = ['existing_dim']
+    test_cols = ['1', "2", "3", "4", "5"]
     df_test = spark.createDataFrame(test_data, test_cols)
 
-    expected = ['1', '2', 'A']
+    expected_data = [
+        ("1", "2", "3", "4", "5"),
+        ("1", "2", "3", "4", "5"),
+        ("1", "2", "3", "4", "5"),
+        ("1", "2", "3", "4", "5"),
+    ]
+    expected_cols = ['1_new', "2", "3_new", "4", "5"]
+    df_expected = spark.createDataFrame(expected_data, expected_cols)
 
-    actual = processing.get_dimension_list_from_col(
-        df_test,
-        'existing_dim',
+    col_name_mappings = {
+        "1": "1_new", # should be renamed
+        "2": "2", # should be unchanged
+        "3": "3_new",
+        "6": "6_new", # not in df, should be ignored
+
+    }
+
+    df_actual = processing.rename_cols(
+        df_test, col_name_mappings
     )
 
-    assert expected == actual
+    assert df_actual.toPandas().equals(df_expected.toPandas()) 

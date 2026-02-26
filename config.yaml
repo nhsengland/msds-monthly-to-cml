@@ -1,7 +1,18 @@
 project_name: "maternity_to_cml"
 path_to_maternity_data: "data_in/msds-sep2025-exp-data.csv"
 output_dir: ""
-log_dir: "" 
+log_dir: ""
+processing_funcs:
+  - name: rename_cols
+    params:
+      col_name_mappings:
+        Org_code: "location_id"
+        Org_level: "location_type"
+        Final_value: "metric_value"
+        ReportingPeriodStartDate: "reporting_period_start_datetime"
+        ReportingPeriodEndDate: "last_record_timestamp"
+
+
 dimensions:
   - AgeAtBookingMotherAvg
   - AgeAtBookingMotherGroup

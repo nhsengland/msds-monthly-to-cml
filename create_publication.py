@@ -50,15 +50,13 @@ def main():
     # ]
     # df_maternity = processing.move_attributes_to_new_dimension(
     #     df_maternity,
-    #     'Dimension',
+    #     'Org_Name',
     #     'england',
     #     'MBRRACE Grouping',
     #     'all_mbrrace_groupings',
     #     mbrrace_groups
     # )
-    
-
-    print(df_maternity.columns)
+    # sys.exit()
 
     output_name = "output.csv"
     write_csv.save_spark_dataframe_as_csv(df_maternity, output_name)

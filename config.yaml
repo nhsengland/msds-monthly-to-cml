@@ -1,8 +1,25 @@
 project_name: "maternity_to_cml"
-path_to_maternity_data: "data_in/msds-sep2025-exp-data.csv"
+path_to_maternity_data: "data_in/mbrrace_test.csv"
 output_dir: ""
 log_dir: ""
 processing_funcs:
+  - name: move_attributes_to_new_dimension
+    params:
+      source_col_name: "Org_Code"
+      source_col_fill_value: "england"
+      new_col_name: "mbrrace_grouping"
+      new_col_fill_value: "no_mbrrace_grouping_filter"
+      attributes_to_move:
+        - "Group 1. Level 3 NICU & NS"
+        - "Group 2. Level 3 NICU"
+        - "Group 3. 4,000 or more"
+        - "Group 4. 2,000 - 3,999"
+        - "Group 5. Under 2,000"
+  # - name: replace_col_values
+  #   params:
+  #     value_mappings:
+  #       old: "new"
+  #     col_name: "col_name"
   - name: rename_cols
     params:
       col_name_mappings:
@@ -11,8 +28,6 @@ processing_funcs:
         Final_value: "metric_value"
         ReportingPeriodStartDate: "reporting_period_start_datetime"
         ReportingPeriodEndDate: "last_record_timestamp"
-
-
 dimensions:
   - AgeAtBookingMotherAvg
   - AgeAtBookingMotherGroup

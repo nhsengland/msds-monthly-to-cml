@@ -20,7 +20,8 @@ def move_attributes_to_new_dimension(
     new_col_fill_value,
     attributes_to_move,
 ):
-    columns = df.columns + [new_dimensionew_col_namen_col_name]
+    columns = df.columns + [new_col_name]
+
     df_attributes_to_keep = df.filter(~F.col(source_col_name).isin(attributes_to_move))
     df_attributes_to_keep = (df_attributes_to_keep
         .withColumn(new_col_name, F.lit(new_col_fill_value))

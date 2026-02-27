@@ -13,25 +13,24 @@ def register(func):
 
 @register
 def move_attributes_to_new_dimension(
-    df, 
-    existing_dimension_col_name,
-    existing_dimension_fill_value,
-    new_dimension_col_name,
-    new_dimension_fill_value,
+    df,
+    source_col_name,
+    source_col_fill_value,
+    new_col_name,
+    new_col_fill_value,
     attributes_to_move,
 ):
-    columns = df.columns + [new_dimension_col_name]
-
-    df_attributes_to_keep = df.filter(~F.col(existing_dimension_col_name).isin(attributes_to_move))
+    columns = df.columns + [new_dimensionew_col_namen_col_name]
+    df_attributes_to_keep = df.filter(~F.col(source_col_name).isin(attributes_to_move))
     df_attributes_to_keep = (df_attributes_to_keep
-        .withColumn(new_dimension_col_name, F.lit(new_dimension_fill_value))
+        .withColumn(new_col_name, F.lit(new_col_fill_value))
         .select(*columns)
     )
 
-    df_attributes_to_move = df.filter(F.col(existing_dimension_col_name).isin(attributes_to_move))
+    df_attributes_to_move = df.filter(F.col(source_col_name).isin(attributes_to_move))
     df_attributes_to_move = (df_attributes_to_move
-        .withColumn(new_dimension_col_name, F.col(existing_dimension_col_name))
-        .withColumn(existing_dimension_col_name, F.lit(existing_dimension_fill_value))
+        .withColumn(new_col_name, F.col(source_col_name))
+        .withColumn(source_col_name, F.lit(source_col_fill_value))
         .select(*columns)
     )
 
@@ -55,3 +54,10 @@ def rename_cols(df, col_name_mappings):
 
     return df.select(*new_cols)
 
+
+@register
+def replace_col_values(df, value_mappings, col_name):
+
+    df = df.replace(value_mappings, subset=[col_name])
+
+    return df

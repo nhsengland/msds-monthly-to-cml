@@ -62,3 +62,15 @@ def replace_col_values(df, value_mappings, col_name):
     df = df.replace(value_mappings, subset=[col_name])
 
     return df
+
+
+@register
+def concat_cols(df, new_col_name, cols_to_concat, prefix="", sep="|"):
+
+    cols_to_concat = [prefix+col for col in cols_to_concat]
+
+    df = df.withColumn(new_col_name, 
+        F.concat_ws(sep, *cols_to_concat)
+    )
+
+    return df

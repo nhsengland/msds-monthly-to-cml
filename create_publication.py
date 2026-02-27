@@ -34,29 +34,10 @@ def main():
         processing_func = processing.PROCESSING_FUNC_REGISTRY[processing_func_config["name"]]
         df_maternity = processing_func(df_maternity, **processing_func_config["params"])
 
-
     df_maternity = dimension_cohorts.create_dimension_table(
         df_maternity,
         config["dimensions"]
     )
-
-
-    # mbrrace_groups = [
-    #     "GROUP 1. LEVEL 3 NEONATAL INTENSIVE CARE UNIT (NICU) AND NEONATAL SURGERY",
-    #     "GROUP 2. LEVEL 3 NICU",
-    #     "GROUP 3. 4,000 OR MORE BIRTHS PER ANNUM AT 24 WEEKS OR LATER",
-    #     "GROUP 4. 2,000 - 3,999 BIRTHS PER ANNUM AT 24 WEEKS OR LATER",
-    #     "GROUP 5. UNDER 2,000 BIRTHS PER ANNUM AT 24 WEEKS OR LATER",
-    # ]
-    # df_maternity = processing.move_attributes_to_new_dimension(
-    #     df_maternity,
-    #     'Org_Name',
-    #     'england',
-    #     'MBRRACE Grouping',
-    #     'all_mbrrace_groupings',
-    #     mbrrace_groups
-    # )
-    # sys.exit()
 
     output_name = "output.csv"
     write_csv.save_spark_dataframe_as_csv(df_maternity, output_name)

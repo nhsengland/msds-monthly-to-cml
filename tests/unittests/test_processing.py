@@ -134,3 +134,63 @@ def test_replace_col_values_parametrized(spark, test_data, mappings, col_name, e
     df_actual = processing.replace_col_values(df_test, mappings, col_name)
 
     assert df_actual.toPandas().equals(df_expected.toPandas()) 
+
+
+def test_concat_cols(spark):
+    """
+    Tests concat_cols
+    """
+
+    test_data = [
+        ("1", "2", "3", "4", "5"), # basic concatenation
+        ("1", " ", "3", "4", "5"), # whitespace
+        ("1", "2", None, "4", "5"), # null value
+    ]
+    test_cols = ["1", "2", "3", "4", "5"]
+    df_test = spark.createDataFrame(test_data, test_cols)
+
+    expected_data = [
+        ("1", "2", "3", "4", "5", "1|2|3|4|5"),
+        ("1", " ", "3", "4", "5", "1| |3|4|5"),
+        ("1", "2", None, "4", "5", "1|2|4|5"),
+    ]
+    expected_cols = ["1", "2", "3", "4", "5", "6"]
+    df_expected = spark.createDataFrame(expected_data, expected_cols)
+    
+    cols_to_concat = ["1", "2", "3", "4", "5"]
+
+    df_actual = processing.concat_cols(
+        df_test, "6", cols_to_concat, "", "|"
+    )
+
+    assert df_actual.toPandas().equals(df_expected.toPandas()) 
+
+
+def test_concat_cols_with_prefix(spark):
+    """
+    Tests concat_cols
+    """
+
+    test_data = [
+        ("1", "2", "3", "4", "5"), # basic concatenation
+        ("1", " ", "3", "4", "5"), # whitespace
+        ("1", "2", None, "4", "5"), # null value
+    ]
+    test_cols = ["all_1", "all_2", "all_3", "all_4", "all_5"]
+    df_test = spark.createDataFrame(test_data, test_cols)
+
+    expected_data = [
+        ("1", "2", "3", "4", "5", "1|2|3|4|5"),
+        ("1", " ", "3", "4", "5", "1| |3|4|5"),
+        ("1", "2", None, "4", "5", "1|2|4|5"),
+    ]
+    expected_cols = ["all_1", "all_2", "all_3", "all_4", "all_5", "6"]
+    df_expected = spark.createDataFrame(expected_data, expected_cols)
+    
+    cols_to_concat = ["1", "2", "3", "4", "5"]
+
+    df_actual = processing.concat_cols(
+        df_test, "6", cols_to_concat, "all_", "|"
+    )
+
+    assert df_actual.toPandas().equals(df_expected.toPandas()) 

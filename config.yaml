@@ -15,11 +15,11 @@ processing_funcs:
         - "Group 3. 4,000 or more"
         - "Group 4. 2,000 - 3,999"
         - "Group 5. Under 2,000"
-  # - name: replace_col_values
-  #   params:
-  #     value_mappings:
-  #       old: "new"
-  #     col_name: "col_name"
+  - name: replace_col_values
+    params:
+      col_name: "col_name"
+      value_mappings:
+        ALL: "england"
   - name: rename_cols
     params:
       col_name_mappings:

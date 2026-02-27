@@ -92,8 +92,8 @@ def test_replace_col_values(spark):
     test_data = [
         ("1", "2"),
         ("1", "2"),
-        ("1", "2"),
-        ("1", "2"),
+        ("2", "2"),
+        ("3", "2"),
     ]
     test_cols = ["col_1", "col_2"]
     df_test = spark.createDataFrame(test_data, test_cols)
@@ -101,14 +101,15 @@ def test_replace_col_values(spark):
     expected_data = [
         ("1_new", "2"),
         ("1_new", "2"),
-        ("1_new", "2"),
-        ("1_new", "2"),
+        ("2_new", "2"),
+        ("3", "2"),
     ]
     expected_cols = ["col_1", "col_2"]
     df_expected = spark.createDataFrame(expected_data, expected_cols)
 
     value_mappings = {
         "1": "1_new",
+        "2": "2_new",
     }
 
     df_actual = processing.replace_col_values(

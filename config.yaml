@@ -65,4 +65,10 @@ processing_funcs:
         Final_value: "metric_value"
         ReportingPeriodStartDate: "reporting_period_start_datetime"
         ReportingPeriodEndDate: "last_record_timestamp"
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: reporting_period_start_datetime
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: last_record_timestamp
 

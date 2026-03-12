@@ -1,9 +1,11 @@
 import re
+import datetime
 
 import pytest
 import pandas
 from pyspark.sql import functions as F
 from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType, StructField, DateType, TimestampType
 
 from src.processing import processing
 from src.utils import spark as spark_utils
@@ -222,3 +224,27 @@ def test_create_uuid_col(spark):
     assert all(len(id_) == uuid_length for id_ in ids), "All IDs should have the requested length"
     assert all(re.fullmatch(r"[0-9a-f]+", id_) for id_ in ids), "All IDs should be lowercase hex"
     assert len(set(ids)) == len(ids), "All IDs should be unique"
+
+
+def test_cast_date_col_to_timestamp(spark):
+    """
+    Tests cast_date_col_to_timestamp converts a date column to timestamp at midnight.
+    """
+
+
+    schema = StructType([StructField("event_date", DateType())])
+    test_data = [
+        (datetime.date(2024, 1, 15),),
+        (datetime.date(2000, 6, 1),),
+        (None,),
+    ]
+    df_test = spark.createDataFrame(test_data, schema)
+
+    df_actual = processing.cast_date_col_to_timestamp(df_test, "event_date")
+
+    assert df_actual.schema["event_date"].dataType == TimestampType()
+
+    rows = df_actual.collect()
+    assert rows[0]["event_date"] == datetime.datetime(2024, 1, 15, 0, 0, 0)
+    assert rows[1]["event_date"] == datetime.datetime(2000, 6, 1, 0, 0, 0)
+    assert rows[2]["event_date"] is None

@@ -83,3 +83,9 @@ def create_uuid_col(df, col_name, length):
         F.substring(F.regexp_replace(F.expr("uuid()"), "-", ""), 1, length)
     )
     return df
+
+
+@register
+def cast_date_col_to_timestamp(df, col_name):
+    df = df.withColumn(col_name, F.col(col_name).cast("timestamp"))
+    return df

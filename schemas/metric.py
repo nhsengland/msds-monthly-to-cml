@@ -1,6 +1,6 @@
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 
-METRICS_SCHEMA = StructType([
+METRIC_SCHEMA = StructType([
     StructField("datapoint_id",                     StringType(),    nullable=False),
     StructField("metric_id",                        StringType(),    nullable=False),
     StructField("metric_dimension_id",              StringType(),    nullable=False),

@@ -74,3 +74,12 @@ def concat_cols(df, new_col_name, cols_to_concat, prefix="", sep="|"):
     )
 
     return df
+
+
+@register
+def create_uuid_col(df, col_name, length):
+    df = df.withColumn(
+        col_name,
+        F.substring(F.regexp_replace(F.expr("uuid()"), "-", ""), 1, length)
+    )
+    return df

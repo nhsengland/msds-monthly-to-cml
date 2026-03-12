@@ -1,3 +1,5 @@
+import re
+
 import pytest
 import pandas
 from pyspark.sql import functions as F
@@ -194,3 +196,29 @@ def test_concat_cols_with_prefix(spark):
     )
 
     assert df_actual.toPandas().equals(df_expected.toPandas()) 
+
+
+def test_create_uuid_col(spark):
+    """
+    Tests create_uuid_col.
+    Since UUIDs are random, we assert structural properties rather than exact values:
+    - the new column is present
+    - every value has exactly the requested length
+    - values consist only of valid hex characters (hyphens stripped before truncation)
+    - values are unique across rows
+    """
+
+
+    test_data = [("a",), ("b",), ("c",), ("d",), ("e",)]
+    df_test = spark.createDataFrame(test_data, ["existing_col"])
+
+    uuid_length = 12
+    df_actual = processing.create_uuid_col(df_test, "row_id", uuid_length)
+
+    assert "row_id" in df_actual.columns
+
+    ids = [row["row_id"] for row in df_actual.collect()]
+
+    assert all(len(id_) == uuid_length for id_ in ids), "All IDs should have the requested length"
+    assert all(re.fullmatch(r"[0-9a-f]+", id_) for id_ in ids), "All IDs should be lowercase hex"
+    assert len(set(ids)) == len(ids), "All IDs should be unique"

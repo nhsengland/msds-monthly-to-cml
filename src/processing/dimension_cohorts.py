@@ -26,7 +26,7 @@ def create_dimension_columns(
 
     return df
 
-# It should find this function and hopefully realise it just... OK yeah it's got it...
+
 def create_dimension_cohort_id_col(df, dimension_cols):
     
     df = df.withColumn(
@@ -69,6 +69,7 @@ def get_dimension_list_from_col(df, dimension_col_name):
     ]
 
     return dimension_cols
+
 
 def create_md5_hash_col(df, cols, new_col_name):
     df = df.withColumn(

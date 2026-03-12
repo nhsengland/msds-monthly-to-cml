@@ -39,6 +39,7 @@ def main():
         config["dimensions"]
     )
 
+
     output_name = "output.csv"
     write_csv.save_spark_dataframe_as_csv(df_maternity, output_name)
     logger.info(f"saved output df {output_name} as csv")

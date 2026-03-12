@@ -5,7 +5,7 @@ import pytest
 import pandas
 from pyspark.sql import functions as F
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType, StructField, DateType, TimestampType
+from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 
 from src.processing import processing
 from src.utils import spark as spark_utils
@@ -228,14 +228,14 @@ def test_create_uuid_col(spark):
 
 def test_cast_date_col_to_timestamp(spark):
     """
-    Tests cast_date_col_to_timestamp converts a date column to timestamp at midnight.
+    Tests cast_date_col_to_timestamp converts a DateType column to timestamp at midnight.
+    Uses default format dd/MM/yyyy.
     """
 
-
-    schema = StructType([StructField("event_date", DateType())])
+    schema = StructType([StructField("event_date", StringType())])
     test_data = [
-        (datetime.date(2024, 1, 15),),
-        (datetime.date(2000, 6, 1),),
+        ("15/01/2024",),
+        ("01/06/2000",),
         (None,),
     ]
     df_test = spark.createDataFrame(test_data, schema)
@@ -248,3 +248,19 @@ def test_cast_date_col_to_timestamp(spark):
     assert rows[0]["event_date"] == datetime.datetime(2024, 1, 15, 0, 0, 0)
     assert rows[1]["event_date"] == datetime.datetime(2000, 6, 1, 0, 0, 0)
     assert rows[2]["event_date"] is None
+
+
+def test_cast_date_col_to_timestamp_custom_format(spark):
+    """
+    Tests cast_date_col_to_timestamp with a non-default format string.
+    """
+
+    schema = StructType([StructField("event_date", StringType())])
+    test_data = [("2024-01-15",), ("2000-06-01",)]
+    df_test = spark.createDataFrame(test_data, schema)
+
+    df_actual = processing.cast_date_col_to_timestamp(df_test, "event_date", format="yyyy-MM-dd")
+
+    rows = df_actual.collect()
+    assert rows[0]["event_date"] == datetime.datetime(2024, 1, 15, 0, 0, 0)
+    assert rows[1]["event_date"] == datetime.datetime(2000, 6, 1, 0, 0, 0)

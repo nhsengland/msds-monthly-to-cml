@@ -71,4 +71,8 @@ processing_funcs:
   - name: cast_date_col_to_timestamp
     params:
       col_name: last_record_timestamp
+  - name: create_uuid_col
+    params:
+      col_name: "datapoint_id"
+      length: 32
 

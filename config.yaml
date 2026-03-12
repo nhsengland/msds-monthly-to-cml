@@ -60,8 +60,8 @@ processing_funcs:
   - name: rename_cols
     params:
       col_name_mappings:
-        Org_code: "location_id"
-        Org_level: "location_type"
+        Org_Code: "location_id"
+        Org_Level: "location_type"
         Final_value: "metric_value"
         ReportingPeriodStartDate: "reporting_period_start_datetime"
         ReportingPeriodEndDate: "last_record_timestamp"
@@ -78,7 +78,7 @@ processing_funcs:
   - name: concat_cols
     params:
       new_col_name: "metric_id"
-      cols_to_concat: ["Dimensions", "Count_Of"]
+      cols_to_concat: ["Dimension", "Count_Of"]
       prefix: ""
       sep: "_"
 

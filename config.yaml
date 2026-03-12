@@ -75,4 +75,11 @@ processing_funcs:
     params:
       col_name: "datapoint_id"
       length: 32
+  - name: concat_cols
+    params:
+      new_col_name: "metric_id"
+      cols_to_concat: ["Dimensions", "Count_Of"]
+      prefix: ""
+      sep: "_"
+
 

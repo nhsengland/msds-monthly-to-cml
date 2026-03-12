@@ -264,3 +264,28 @@ def test_cast_date_col_to_timestamp_custom_format(spark):
     rows = df_actual.collect()
     assert rows[0]["event_date"] == datetime.datetime(2024, 1, 15, 0, 0, 0)
     assert rows[1]["event_date"] == datetime.datetime(2000, 6, 1, 0, 0, 0)
+
+
+def test_drop_cols(spark):
+    """
+    Tests drop_cols removes the specified columns and leaves others intact.
+    """
+    test_data = [("a", "b", "c")]
+    df_test = spark.createDataFrame(test_data, ["col_1", "col_2", "col_3"])
+
+    df_actual = processing.drop_cols(df_test, ["col_1", "col_3"])
+
+    assert df_actual.columns == ["col_2"]
+    assert df_actual.count() == 1
+
+
+def test_drop_cols_nonexistent(spark):
+    """
+    Tests drop_cols silently ignores columns that don't exist in the dataframe.
+    """
+    test_data = [("a", "b")]
+    df_test = spark.createDataFrame(test_data, ["col_1", "col_2"])
+
+    df_actual = processing.drop_cols(df_test, ["col_1", "col_99"])
+
+    assert df_actual.columns == ["col_2"]

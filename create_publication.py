@@ -34,6 +34,8 @@ def main():
         processing_func = processing.PROCESSING_FUNC_REGISTRY[processing_func_config["name"]]
         df_maternity = processing_func(df_maternity, **processing_func_config["params"])
 
+    df_maternity
+
     df_maternity = dimension_cohorts.create_dimension_table(
         df_maternity,
         config["dimensions"]

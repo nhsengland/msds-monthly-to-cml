@@ -89,3 +89,8 @@ def create_uuid_col(df, col_name, length):
 def cast_date_col_to_timestamp(df, col_name, format="dd/MM/yyyy"):
     df = df.withColumn(col_name, F.to_timestamp(F.col(col_name), format))
     return df
+
+
+@register
+def drop_cols(df, cols):
+    return df.drop(*cols)

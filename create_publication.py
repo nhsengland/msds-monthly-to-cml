@@ -14,6 +14,8 @@ from src.data_ingestion import reading_data
 from src.processing import processing
 from src.processing import dimension_cohorts
 from src.data_exports import write_csv
+from src.schemas import dimensions as dim_schema, metric
+from src.validation import validation
 
 logger = logging.getLogger(__name__)
 
@@ -34,20 +36,35 @@ def main():
         processing_func = processing.PROCESSING_FUNC_REGISTRY[processing_func_config["name"]]
         df_maternity = processing_func(df_maternity, **processing_func_config["params"])
 
-    df_maternity
-
     df_maternity = dimension_cohorts.create_dimension_table(
         df_maternity,
         config["dimensions"]
     )
+    df_maternity = processing.concat_cols(df_maternity, "metric_dimension_id", ["metric_id", "dimension_cohort_id"], sep="_")
 
 
-    output_name = "output.csv"
-    write_csv.save_spark_dataframe_as_csv(df_maternity, output_name)
+    #### TODO: Split tables - use function already made
+    dimensions_schema = dim_schema.create_dimensions_schema(config["dimensions"])
+    df_dimensions = validation.select_from_schema(df_maternity, dimensions_schema)
+    df_metric = validation.select_from_schema(df_maternity, metric.METRIC_SCHEMA)
+
+    df_dimensions.limit(5).show()
+    df_metric.limit(5).show()
+    #### TODO: Validate datatypes of new tables
+
+    output_name = "metric"
+    write_csv.save_spark_dataframe_as_csv(df_metric, output_name)
     logger.info(f"saved output df {output_name} as csv")
     write_csv.rename_csv_output(output_name)
     logger.info(f"renamed {output_name} file")
     
+    output_name = "dimensions"
+    write_csv.save_spark_dataframe_as_csv(df_dimensions, output_name)
+    logger.info(f"saved output df {output_name} as csv")
+    write_csv.rename_csv_output(output_name)
+    logger.info(f"renamed {output_name} file")
+
+
     # stop the spark session
     spark.stop()
         

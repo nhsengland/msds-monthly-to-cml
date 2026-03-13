@@ -94,3 +94,8 @@ def cast_date_col_to_timestamp(df, col_name, format="dd/MM/yyyy"):
 @register
 def drop_cols(df, cols):
     return df.drop(*cols)
+
+
+@register
+def add_lit_col(df, col_name, col_value):
+    return df.withColumn(col_name, F.lit(col_value))

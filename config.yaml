@@ -1,4 +1,6 @@
 project_name: "maternity_to_cml"
+publication_date: &publication_date "01/12/2026"
+last_ingest_timestamp: &last_ingest_timestamp "15/12/2026" # This eventually needs to be derived from the date the source date is ingested into FDP
 path_to_maternity_data: "data_in/mbrrace_test.csv"
 output_dir: ""
 log_dir: ""
@@ -52,11 +54,6 @@ processing_funcs:
       col_name: "Org_Code"
       value_mappings:
         ALL: "england"
-  # - name: concat_cols
-  #   params:
-  #     new_col_name: "dimension_cohort_id"
-  #     cols_to_concat: *dimensions
-  #     prefix: "all_"
   - name: rename_cols
     params:
       col_name_mappings:
@@ -81,5 +78,22 @@ processing_funcs:
       cols_to_concat: ["Dimension", "Count_Of"]
       prefix: ""
       sep: "_"
-
+  - name: add_lit_col
+    params:
+      col_name: "publication_date"
+      col_value: *publication_date
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: publication_date
+  - name: add_lit_col # This eventually needs to be derived from the date the source date is ingested into FDP
+    params:
+      col_name: "last_ingest_timestamp"
+      col_value: *publication_date
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: last_ingest_timestamp
+  - name: add_lit_col
+    params:
+      col_name: "additional_metric_values"
+      col_value: null
 

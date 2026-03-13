@@ -289,3 +289,31 @@ def test_drop_cols_nonexistent(spark):
     df_actual = processing.drop_cols(df_test, ["col_1", "col_99"])
 
     assert df_actual.columns == ["col_2"]
+
+
+def test_add_lit_col(spark):
+    """
+    Tests add_lit_col adds a new column with the given literal value on every row.
+    """
+    test_data = [("a",), ("b",), ("c",)]
+    df_test = spark.createDataFrame(test_data, ["existing_col"])
+
+    df_actual = processing.add_lit_col(df_test, "publication_date", "01/01/2001")
+
+    assert "publication_date" in df_actual.columns
+    values = [row["publication_date"] for row in df_actual.collect()]
+    assert values == ["01/01/2001", "01/01/2001", "01/01/2001"]
+
+
+def test_add_lit_col_does_not_affect_other_columns(spark):
+    """
+    Tests add_lit_col leaves existing columns untouched.
+    """
+    test_data = [("x", "y")]
+    df_test = spark.createDataFrame(test_data, ["col_1", "col_2"])
+
+    df_actual = processing.add_lit_col(df_test, "new_col", "val")
+
+    row = df_actual.collect()[0]
+    assert row["col_1"] == "x"
+    assert row["col_2"] == "y"

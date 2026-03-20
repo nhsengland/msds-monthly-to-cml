@@ -1,7 +1,11 @@
+import logging
 import os
 import glob
 from pathlib import Path
 from pyspark import sql as pyspark
+from pyspark.sql.types import StringType
+
+logger = logging.getLogger(__name__)
 
 def save_spark_dataframe_as_csv(
     df_input : pyspark.DataFrame, 
@@ -17,6 +21,10 @@ def save_spark_dataframe_as_csv(
         output_folder : str
             The name for the folder in which the csv file will be saved
     """
+
+    for col_name, col_type in df_input.dtypes:
+        if col_type == 'void':
+            df_input = df_input.withColumn(col_name, df_input[col_name].cast(StringType()))
 
     (df_input
         .coalesce(1)
@@ -45,3 +53,23 @@ def rename_csv_output(
     files = glob.glob(path)
     print(files)
     os.rename(files[0], str(Path(f'data_out/{output_name}/{output_name}.csv')) )
+
+
+def save_df_as_named_csv(
+    df: pyspark.DataFrame,
+    output_name: str
+) -> None:
+    """
+    Saves a Spark DataFrame as a CSV and renames it to a consistent filename.
+
+    Parameters
+    ----------
+        df : pyspark.DataFrame
+            The Spark DataFrame to save.
+        output_name : str
+            Name used for the output folder and resulting CSV file.
+    """
+    save_spark_dataframe_as_csv(df, output_name)
+    logger.info(f"saved output df {output_name} as csv")
+    rename_csv_output(output_name)
+    logger.info(f"renamed {output_name} file")

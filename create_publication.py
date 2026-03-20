@@ -36,27 +36,12 @@ def main():
     )
     df_maternity = processing.concat_cols(df_maternity, "metric_dimension_id", ["metric_id", "dimension_cohort_id"], sep="_")
 
-
-    #### TODO: Split tables - use function already made
     dimensions_schema = dim_schema.create_dimensions_schema(config["dimensions"])
     df_dimensions = validation.select_from_schema(df_maternity, dimensions_schema)
     df_metric = validation.select_from_schema(df_maternity, metric.METRIC_SCHEMA)
 
-    df_dimensions.limit(5).show()
-    df_metric.limit(5).show()
-
-    output_name = "metric"
-    write_csv.save_spark_dataframe_as_csv(df_metric, output_name)
-    logger.info(f"saved output df {output_name} as csv")
-    write_csv.rename_csv_output(output_name)
-    logger.info(f"renamed {output_name} file")
-    
-    output_name = "dimensions"
-    write_csv.save_spark_dataframe_as_csv(df_dimensions, output_name)
-    logger.info(f"saved output df {output_name} as csv")
-    write_csv.rename_csv_output(output_name)
-    logger.info(f"renamed {output_name} file")
-
+    write_csv.save_df_as_named_csv(df_metric, "metric")
+    write_csv.save_df_as_named_csv(df_dimensions, "dimensions")
 
     # stop the spark session
     spark.stop()

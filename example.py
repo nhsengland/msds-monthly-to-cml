@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def main():
     # load config, here we load our project's parameters from the config.
-    config = file_paths.get_config()
+    config = file_paths.get_config("example_config.yaml")
     # create spark session
     spark = spark_utils.create_spark_session(config['project_name'])
     # Loading data from CSV as spark data frame

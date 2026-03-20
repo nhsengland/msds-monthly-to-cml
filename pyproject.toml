@@ -1,15 +1,19 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "rap-package-template"
-version = "1.0.0"
-authors = [
-    { name="Data Science Skilled team", email="datascience@nhs.net" }
-]
+[tool.poetry]
+name = "cml-helper-functions"
+version = "0.1.0"
+description = ""
+authors = ["Data Science Skilled team <datascience@nhs.net>"]
 readme = "README.md"
-requires-python = ">=3.10"
 
-[project.urls]
-"Homepage" = "https://nhsdigital.github.io/rap-community-of-practice/"
+[tool.poetry.dependencies]
+python = ">=3.10"
+pyspark = "3.3.2"
+pyyaml = "6.0.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "6.2.5"
+pytest-html = "3.1.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

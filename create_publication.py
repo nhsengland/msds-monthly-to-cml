@@ -1,8 +1,7 @@
 import logging
-import timeit 
-import yaml
+import timeit
 import sys
-from datetime import datetime 
+from datetime import datetime
 
 from pyspark.sql import functions as F
 
@@ -20,11 +19,9 @@ from src.validation import validation
 logger = logging.getLogger(__name__)
 
 def main():
-    
-    # load config, here we load our project's parameters from the config.toml file
-    # config = file_paths.get_config()
-    with open('config.yaml', 'r') as file:
-       config = yaml.safe_load(file)
+
+    # load config, here we load our project's parameters from the config.yaml file
+    config = file_paths.get_config()
 
     # create spark session
     spark = spark_utils.create_spark_session(config['project_name'])

@@ -1,7 +1,0 @@
-project_name = "maternity_to_cml"
-
-path_to_maternity_data = "data_in/msds-sep2025-exp-data.csv"
-
-# Here we describe where the output and logs are saved, change as necessary
-output_dir = ''
-log_dir = '' 

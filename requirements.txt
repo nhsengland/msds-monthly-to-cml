@@ -2,7 +2,7 @@
 # See https://nhsd-git.digital.nhs.uk/data-services/analytics-service/iuod/rap-community-of-practice/-/blob/master/python/project-structure-and-packaging.md
 
 # PySpark
-pyspark==3.2.2
+pyspark==3.3.2
 
 # Requests - used to collect data
 requests

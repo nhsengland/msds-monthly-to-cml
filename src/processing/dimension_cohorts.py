@@ -26,7 +26,7 @@ def create_dimension_columns(
 
     return df
 
-# It should find this function and hopefully realise it just... OK yeah it's got it...
+
 def create_dimension_cohort_id_col(df, dimension_cols):
     
     df = df.withColumn(

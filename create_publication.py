@@ -19,13 +19,10 @@ from src.validation import validation
 logger = logging.getLogger(__name__)
 
 def main():
-
-    # load config, here we load our project's parameters from the config.yaml file
+    # load config, here we load our project's parameters from the config.
     config = file_paths.get_config()
-
     # create spark session
     spark = spark_utils.create_spark_session(config['project_name'])
-
     # Loading data from CSV as spark data frame
     df_maternity = reading_data.load_csv_into_spark_data_frame(spark, config['path_to_maternity_data'])
 
@@ -47,7 +44,6 @@ def main():
 
     df_dimensions.limit(5).show()
     df_metric.limit(5).show()
-    #### TODO: Validate datatypes of new tables
 
     output_name = "metric"
     write_csv.save_spark_dataframe_as_csv(df_metric, output_name)

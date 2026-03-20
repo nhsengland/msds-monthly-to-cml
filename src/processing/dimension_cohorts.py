@@ -11,7 +11,16 @@ def create_dimension_columns(
 ):
     def _create_new_dim_col_expr(dimension):
         return (   
-            F.when(F.col(dimension_col_name) == dimension, F.col(attribute_col_name))
+            F.when(
+                (F.col(dimension_col_name) == dimension)
+                & 
+                (F.col(attribute_col_name).isNull()), 
+                F.concat(F.lit("all_"), F.lit(dimension))
+             )
+             .when(
+                F.col(dimension_col_name) == dimension, 
+                F.col(attribute_col_name)
+             )
              .otherwise(F.concat(F.lit("all_"), F.lit(dimension) ))
              .alias(dimension)
         )
@@ -42,11 +51,11 @@ def create_dimension_cohort_id_col(df, dimension_cols):
     return df
 
 
-def create_dimension_table(df, dimension_cols, dimensions_to_exclude):
+def create_dimension_table(df, dimension_cols, dimensions_to_exclude, dimension_col_name="Dimension", attribute_col_name="Measure"):
     df = create_dimension_columns(
         df,
-        "Dimension",
-        "Measure",
+        dimension_col_name,
+        attribute_col_name,
         dimension_cols,
         dimensions_to_exclude
     )

@@ -32,7 +32,8 @@ def main():
 
     df_maternity = dimension_cohorts.create_dimension_table(
         df_maternity,
-        config["dimensions"]
+        config["dimensions"],
+        ["mbrrace_grouping"]
     )
     df_maternity = processing.concat_cols(df_maternity, "metric_dimension_id", ["metric_id", "dimension_cohort_id"], sep="_")
 

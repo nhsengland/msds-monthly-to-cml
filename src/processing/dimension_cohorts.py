@@ -6,7 +6,8 @@ def create_dimension_columns(
     df,
     dimension_col_name,
     attribute_col_name,
-    dimensions
+    dimensions,
+    dimensions_to_exclude
 ):
     def _create_new_dim_col_expr(dimension):
         return (   
@@ -17,7 +18,8 @@ def create_dimension_columns(
 
     new_dimension_cols = []
     for dimension in dimensions:
-
+        if dimension in dimensions_to_exclude:
+            continue
         new_dimension_cols.append(
             _create_new_dim_col_expr(dimension)
         )
@@ -40,12 +42,13 @@ def create_dimension_cohort_id_col(df, dimension_cols):
     return df
 
 
-def create_dimension_table(df, dimension_cols):
+def create_dimension_table(df, dimension_cols, dimensions_to_exclude):
     df = create_dimension_columns(
         df,
         "Dimension",
         "Measure",
-        dimension_cols
+        dimension_cols,
+        dimensions_to_exclude
     )
 
     df = create_dimension_cohort_id_col(

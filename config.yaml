@@ -5,6 +5,7 @@ path_to_maternity_data: "data_in/mbrrace_test.csv"
 output_dir: ""
 log_dir: ""
 dimensions: &dimensions
+  - mbrrace_grouping
   - AgeAtBookingMotherAvg
   - AgeAtBookingMotherGroup
   - ApgarScore5TermGroup7

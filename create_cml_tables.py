@@ -5,22 +5,22 @@ from datetime import datetime
 
 from pyspark.sql import functions as F
 
-from src.utils import file_paths
-from src.utils import logging_config
-from src.utils import spark as spark_utils
-from src.data_ingestion import get_data
-from src.data_ingestion import reading_data
-from src.processing import processing
-from src.processing import dimension_cohorts
-from src.data_exports import write_csv
-from src.schemas import dimensions as dim_schema, metric
-from src.validation import validation
+from cml_conversion_helpers.utils import file_paths
+from cml_conversion_helpers.utils import logging_config
+from cml_conversion_helpers.utils import spark as spark_utils
+from cml_conversion_helpers.data_ingestion import get_data
+from cml_conversion_helpers.data_ingestion import reading_data
+from cml_conversion_helpers.processing import processing
+from cml_conversion_helpers.processing import dimension_cohorts
+from cml_conversion_helpers.data_exports import write_csv
+from cml_schemas import spark_schemas
+
 
 logger = logging.getLogger(__name__)
 
 def main():
     # load config, here we load our project's parameters from the config.
-    config = file_paths.get_config("example_config.yaml")
+    config = file_paths.get_config("config.yaml")
     # create spark session
     spark = spark_utils.create_spark_session(config['project_name'])
     # Loading data from CSV as spark data frame
@@ -37,9 +37,9 @@ def main():
     )
     df_maternity = processing.concat_cols(df_maternity, "metric_dimension_id", ["metric_id", "dimension_cohort_id"], sep="_")
 
-    dimensions_schema = dim_schema.create_dimensions_schema(config["dimensions"])
-    df_dimensions = validation.select_from_schema(df_maternity, dimensions_schema)
-    df_metric = validation.select_from_schema(df_maternity, metric.METRIC_SCHEMA)
+    dimensions_schema = spark_schemas.create_dimensions_schema(config["dimensions"])
+    df_dimensions = spark_schemas.select_from_schema(df_maternity, dimensions_schema)
+    df_metric = spark_schemas.select_from_schema(df_maternity, spark_schemas.METRIC_SCHEMA)
 
     write_csv.save_df_as_named_csv(df_metric, "metric")
     write_csv.save_df_as_named_csv(df_dimensions, "dimensions")

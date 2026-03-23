@@ -1,6 +1,6 @@
 project_name: "maternity_to_cml"
 publication_date: &publication_date "01/12/2026"
-last_ingest_timestamp: &last_ingest_timestamp "15/12/2026" # This eventually needs to be derived from the date the source date is ingested into FDP
+last_ingest_timestamp: &last_ingest_timestamp "15/12/2026"
 path_to_maternity_data: "data_in/mbrrace_test.csv"
 output_dir: ""
 log_dir: ""
@@ -86,7 +86,7 @@ processing_funcs:
   - name: cast_date_col_to_timestamp
     params:
       col_name: publication_date
-  - name: add_lit_col # This eventually needs to be derived from the date the source date is ingested into FDP
+  - name: add_lit_col 
     params:
       col_name: "last_ingest_timestamp"
       col_value: *publication_date

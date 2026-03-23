@@ -175,23 +175,18 @@ reference = "test-pypi"
 
 [[package]]
 name = "cml-schemas"
-version = "0.1.1"
+version = "0.1.2"
 description = "CML Spark schemas"
 optional = false
-python-versions = ">=3.10,<4"
+python-versions = "<4,>=3.10"
 groups = ["main"]
 files = [
-    {file = "cml_schemas-0.1.1-py3-none-any.whl", hash = "sha256:0203f71d6bcddfec3f17301422139e89cb1abeacad58969844361c1a98095986"},
-    {file = "cml_schemas-0.1.1.tar.gz", hash = "sha256:041c601fc4042956589fd7f5f75cc7df4866dc310805e1fa4e4fcd5d04a1e9fb"},
+    {file = "cml_schemas-0.1.2-py3-none-any.whl", hash = "sha256:8bd10233f3cb2e5a29b12e96caf0d1f5c7794dca56f7386e0767ab6f3132b44a"},
+    {file = "cml_schemas-0.1.2.tar.gz", hash = "sha256:3ff1eb107e51291c3c2a4105aa2043f025e17cc2c678836f7912b8464f4118a8"},
 ]
 
 [package.dependencies]
-pyspark = ">3.5"
-
-[package.source]
-type = "legacy"
-url = "https://test.pypi.org/simple"
-reference = "testpypi"
+pyspark = ">=3.5"
 
 [[package]]
 name = "colorama"
@@ -580,4 +575,4 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10, <4"
-content-hash = "43a64c6c0587f935d083e16fa4c5f1945a7adfb6b3f3dd4608a8343354cd188e"
+content-hash = "a3b509b070c9ba28b382c1d83522e7f6fa5378e5817649866bd6bc9a0dd15faf"

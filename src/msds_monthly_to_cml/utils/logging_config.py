@@ -25,7 +25,7 @@ def configure_logging(
         format='%(asctime)s - %(levelname)s -- %(filename)s:\
                 %(funcName)5s():%(lineno)s -- %(message)s',
         handlers=[
-            logging.FileHandler(str(Path(f".{log_folder}/{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"))),
+            logging.FileHandler(str(Path(f"{log_folder}/{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"))),
             logging.StreamHandler(sys.stdout) # Add second handler to print log message to screen
         ]  
     )

@@ -37,6 +37,8 @@ dimensions: &dimensions
   - TotalBabies
   - TotalBookings
   - TotalDeliveries
+dimension_creation_exclusions:
+  - mbrrace_grouping
 processing_funcs:
   - name: move_attributes_to_new_dimension
     params:
@@ -89,7 +91,7 @@ processing_funcs:
   - name: add_lit_col 
     params:
       col_name: "last_ingest_timestamp"
-      col_value: *publication_date
+      col_value: *last_ingest_timestamp
   - name: cast_date_col_to_timestamp
     params:
       col_name: last_ingest_timestamp

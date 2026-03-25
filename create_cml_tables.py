@@ -1,6 +1,5 @@
 import logging
 import timeit
-import sys
 from datetime import datetime
 
 from pyspark.sql import functions as F
@@ -11,7 +10,6 @@ from cml_schemas import spark_schemas
 from msds_monthly_to_cml.utils import file_paths
 from msds_monthly_to_cml.utils import logging_config
 from msds_monthly_to_cml.utils import spark as spark_utils
-from msds_monthly_to_cml.data_ingestion import get_data
 from msds_monthly_to_cml.data_ingestion import reading_data
 from msds_monthly_to_cml.data_exports import write_csv
 
@@ -54,7 +52,7 @@ def main():
     df_maternity = dimension_cohorts.create_dimension_table(
         df_maternity,
         config["dimensions"],
-        ["mbrrace_grouping"]
+        config["dimension_creation_exclusions"]
     )
     df_maternity = processing.concat_cols(df_maternity, "metric_dimension_id", ["metric_id", "dimension_cohort_id"], sep="_")
     logger.info(f"created the columns needed for the dimensions table.")
@@ -82,8 +80,8 @@ def main():
         
 
 if __name__ == "__main__":
-    print(f"Running create_publication script")
+    print(f"Running create_cml_tables script")
     start_time = timeit.default_timer()
     main()
     total_time = timeit.default_timer() - start_time
-    logger.info(f"Running time of create_publication script: {int(total_time / 60)} minutes and {round(total_time%60)} seconds.\n")
+    logger.info(f"Running time of create_cml_tables script: {int(total_time / 60)} minutes and {round(total_time%60)} seconds.\n")

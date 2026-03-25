@@ -12,6 +12,11 @@ test.py
 # allow csv files in the backtests folder
 !tests/backtests/ground_truth/*.csv
 
+logs/*
+!logs/.gitkeep
+
+
+
 *.ipynb
 *.ipynb_checkpoints
 *.xlsx

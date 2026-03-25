@@ -1,9 +1,9 @@
 project_name: "maternity_to_cml"
 publication_date: &publication_date "01/12/2026"
 last_ingest_timestamp: &last_ingest_timestamp "15/12/2026"
-path_to_maternity_data: "data_in/mbrrace_test.csv"
-output_dir: ""
-log_dir: ""
+path_to_source_data: "data_in/mbrrace_test.csv"
+output_dir: "data_out"
+log_dir: "logs/"
 dimensions: &dimensions
   - mbrrace_grouping
   - AgeAtBookingMotherAvg

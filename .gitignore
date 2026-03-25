@@ -6,9 +6,16 @@
 #####################################################################
 # Avoid committing any data. If you need to make an exception for one file you can do that separately
 
+.claude/
+test.py
 *.csv
 # allow csv files in the backtests folder
 !tests/backtests/ground_truth/*.csv
+
+logs/*
+!logs/.gitkeep
+
+
 
 *.ipynb
 *.ipynb_checkpoints

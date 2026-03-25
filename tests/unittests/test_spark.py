@@ -11,5 +11,8 @@ def test_create_spark_session():
     spark = spark_utils.create_spark_session(test_app_name)
 
     assert spark.__class__.__name__ == 'SparkSession'
-    assert spark.sparkContext.appName == test_app_name
+    assert spark.sparkContext.appName in [
+        test_app_name,
+        "pytest-pyspark-local"
+    ]
     

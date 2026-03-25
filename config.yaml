@@ -1,0 +1,102 @@
+project_name: "maternity_to_cml"
+publication_date: &publication_date "01/12/2026"
+last_ingest_timestamp: &last_ingest_timestamp "15/12/2026"
+path_to_source_data: "data_in/mbrrace_test.csv"
+output_dir: "data_out"
+log_dir: "logs/"
+dimensions: &dimensions
+  - mbrrace_grouping
+  - AgeAtBookingMotherAvg
+  - AgeAtBookingMotherGroup
+  - ApgarScore5TermGroup7
+  - BabyFirstFeedBreastMilkStatus
+  - BirthweightTermGroup
+  - BirthweightTermGroup2500
+  - CCP_Antenatal
+  - CCP_Any_Pathways
+  - CCP_Birth
+  - CCP_Postpartum
+  - CO_Concentration_Delivery
+  - ComplexSocialFactorsInd
+  - DeliveryMethodBabyGroup
+  - DeprivationDecileAtBooking
+  - EthnicCategoryMotherGroup
+  - FolicAcidSupplement
+  - GestAgeFormalAntenatalBookingGroup
+  - GestationLengthBirth
+  - GestationLengthBirthGroup37
+  - PCP_Antenatal
+  - PCP_Any_Pathways
+  - PCP_Birth
+  - PCP_Postpartum
+  - PlaceTypeActualDeliveryMidwifery
+  - PreviousCaesareanSectionsGroup
+  - PreviousLiveBirthsGroup
+  - SkinToSkinContact1HourTerm
+  - SmokingStatusGroupBooking
+  - TotalBabies
+  - TotalBookings
+  - TotalDeliveries
+dimension_creation_exclusions:
+  - mbrrace_grouping
+processing_funcs:
+  - name: move_attributes_to_new_dimension
+    params:
+      source_col_name: "Org_Code"
+      source_col_fill_value: "england"
+      new_col_name: "mbrrace_grouping"
+      new_col_fill_value: "no_mbrrace_grouping_filter"
+      attributes_to_move:
+        - "Group 1. Level 3 NICU & NS"
+        - "Group 2. Level 3 NICU"
+        - "Group 3. 4,000 or more"
+        - "Group 4. 2,000 - 3,999"
+        - "Group 5. Under 2,000"
+  - name: replace_col_values
+    params:
+      col_name: "Org_Code"
+      value_mappings:
+        ALL: "england"
+  - name: rename_cols
+    params:
+      col_name_mappings:
+        Org_Code: "location_id"
+        Org_Level: "location_type"
+        Final_value: "metric_value"
+        ReportingPeriodStartDate: "reporting_period_start_datetime"
+        ReportingPeriodEndDate: "last_record_timestamp"
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: reporting_period_start_datetime
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: last_record_timestamp
+  - name: create_uuid_col
+    params:
+      col_name: "datapoint_id"
+      length: 32
+  - name: concat_cols
+    params:
+      new_col_name: "metric_id"
+      cols_to_concat: ["Dimension", "Count_Of"]
+      prefix: ""
+      sep: "_"
+  - name: add_lit_col
+    params:
+      col_name: "publication_date"
+      col_value: *publication_date
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: publication_date
+  - name: add_lit_col 
+    params:
+      col_name: "last_ingest_timestamp"
+      col_value: *last_ingest_timestamp
+  - name: cast_date_col_to_timestamp
+    params:
+      col_name: last_ingest_timestamp
+  - name: add_lit_col
+    params:
+      col_name: "additional_metric_values"
+      col_value: null
+

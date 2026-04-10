@@ -71,6 +71,10 @@ processing_funcs:
   - name: cast_date_col_to_timestamp
     params:
       col_name: last_record_timestamp
+  - name: add_lit_col
+    params:
+      col_name: "reporting_grain"
+      col_value: "monthly"
   - name: create_uuid_col
     params:
       col_name: "datapoint_id"
@@ -83,11 +87,11 @@ processing_funcs:
       sep: "_"
   - name: add_lit_col
     params:
-      col_name: "publication_date"
+      col_name: "publication_datetime"
       col_value: *publication_date
   - name: cast_date_col_to_timestamp
     params:
-      col_name: publication_date
+      col_name: publication_datetime
   - name: add_lit_col 
     params:
       col_name: "last_ingest_timestamp"

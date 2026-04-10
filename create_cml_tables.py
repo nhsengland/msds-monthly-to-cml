@@ -47,14 +47,32 @@ def main():
         df_maternity = processing_func(df_maternity, **processing_func_config["params"])
     logger.info(f"done!")
 
-
     # create the columns needed for the dimensions table
-    df_maternity = dimension_cohorts.create_dimension_table(
+    df_maternity = dimension_cohorts.create_dimension_columns(
         df_maternity,
+        "Dimension",
+        "Measure",
         config["dimensions"],
         config["dimension_creation_exclusions"]
     )
-    df_maternity = processing.concat_cols(df_maternity, "metric_dimension_id", ["metric_id", "dimension_cohort_id"], sep="_")
+    df_maternity = dimension_cohorts.create_md5_hash_col(
+        df_maternity,
+        config["dimensions"],
+        "dimension_id"
+    )
+
+    df_maternity = processing.concat_cols(
+        df_maternity,
+        "datapoint_id",
+        ["metric_id", "dimension_id", "reporting_grain", "location_id", "reporting_period_start_datetime"],
+        prefix="",
+        sep="_"
+    )
+
+
+ 
+
+    df_maternity = processing.concat_cols(df_maternity, "metric_dimension_id", ["metric_id", "dimension_id"], sep="_")
     logger.info(f"created the columns needed for the dimensions table.")
 
 

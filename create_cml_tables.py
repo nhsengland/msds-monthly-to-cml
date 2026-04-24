@@ -55,6 +55,16 @@ def main():
         config["dimensions"],
         config["dimension_creation_exclusions"]
     )
+    df_maternity = dimension_cohorts.create_dimension_type_col(
+        df_maternity,
+        config["dimensions"],
+        "dimension_type_id"
+    )
+    df_maternity = dimension_cohorts.create_dimension_count_col(
+        df_maternity,
+        config["dimensions"],
+        "dimension_count"
+    )
     df_maternity = dimension_cohorts.create_md5_hash_col(
         df_maternity,
         config["dimensions"],

@@ -75,7 +75,7 @@ processing_funcs:
         Local Maternity System: nhs-icb
         MBRRACE Grouping: mbrrace_grouping
         National: nhs-country
-        NHS England (Region): nhs-country
+        NHS England (Region): nhs-region
         Provider: nhs-trust
         SubICB of Responsibility: nhs-sub-icb-location
   - name: cast_date_col_to_timestamp

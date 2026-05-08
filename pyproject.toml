@@ -16,12 +16,11 @@ cml-conversion-helpers = "0.3.0"
 pytest = ">=8.0"
 pytest-html = ">=3.1.1"
 
-
-[[tool.poetry.source]]
-name = "test-pypi"
-url = "https://test.pypi.org/simple/"
-priority = "explicit"
-
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-html>=3.1.1",
+]
 
 [build-system]
 requires = ["poetry-core"]

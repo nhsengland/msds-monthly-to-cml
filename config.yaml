@@ -65,12 +65,29 @@ processing_funcs:
         Final_value: "metric_value"
         ReportingPeriodStartDate: "reporting_period_start_datetime"
         ReportingPeriodEndDate: "last_record_timestamp"
+  - name: replace_col_values
+    params:
+      col_name: "location_type"
+      value_mappings:
+        Booking Site: nhs-trust-site
+        Delivery Site: nhs-trust-site
+        Local Authority of Residence: local_authority
+        Local Maternity System: nhs-icb
+        MBRRACE Grouping: mbrrace_grouping
+        National: nhs-country
+        NHS England (Region): nhs-region
+        Provider: nhs-trust
+        SubICB of Responsibility: nhs-sub-icb-location
   - name: cast_date_col_to_timestamp
     params:
       col_name: reporting_period_start_datetime
   - name: cast_date_col_to_timestamp
     params:
       col_name: last_record_timestamp
+  - name: add_lit_col
+    params:
+      col_name: "reporting_grain"
+      col_value: "monthly"
   - name: create_uuid_col
     params:
       col_name: "datapoint_id"
@@ -83,11 +100,11 @@ processing_funcs:
       sep: "_"
   - name: add_lit_col
     params:
-      col_name: "publication_date"
+      col_name: "publication_datetime"
       col_value: *publication_date
   - name: cast_date_col_to_timestamp
     params:
-      col_name: publication_date
+      col_name: publication_datetime
   - name: add_lit_col 
     params:
       col_name: "last_ingest_timestamp"

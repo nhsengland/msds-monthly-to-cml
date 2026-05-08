@@ -7,22 +7,20 @@ readme = "README.md"
 packages = [{include = "msds_monthly_to_cml", from = "src"}]
 
 [tool.poetry.dependencies]
-python = ">=3.10, <4"
-pyspark = ">=3.5.0"
+python = ">=3.11, <4"
 pyyaml = ">=6.0.3"
-cml-conversion-helpers = "0.2.0"
-cml-schemas = "0.1.2"
+cml-schemas = "2.1.0"
+cml-conversion-helpers = "0.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.0"
 pytest-html = ">=3.1.1"
 
-
-[[tool.poetry.source]]
-name = "test-pypi"
-url = "https://test.pypi.org/simple/"
-priority = "explicit"
-
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-html>=3.1.1",
+]
 
 [build-system]
 requires = ["poetry-core"]

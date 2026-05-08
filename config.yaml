@@ -1,7 +1,7 @@
 project_name: "maternity_to_cml"
 publication_date: &publication_date "01/12/2026"
 last_ingest_timestamp: &last_ingest_timestamp "15/12/2026"
-path_to_source_data: "data_in/mbrrace_test.csv"
+path_to_source_data: "data_in/msds-sep2025-exp-data.csv"
 output_dir: "data_out"
 log_dir: "logs/"
 dimensions: &dimensions
@@ -73,7 +73,7 @@ processing_funcs:
         Delivery Site: nhs-trust-site
         Local Authority of Residence: local_authority
         Local Maternity System: nhs-icb
-        MBRRACE Grouping: mbrrace_grouping
+        MBRRACE Grouping: nhs-country
         National: nhs-country
         NHS England (Region): nhs-region
         Provider: nhs-trust

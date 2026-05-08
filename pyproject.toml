@@ -16,6 +16,17 @@ cml-conversion-helpers = "0.3.0"
 pytest = ">=8.0"
 pytest-html = ">=3.1.1"
 
+[project]
+name = "maternity-services-statistics-to-cml"
+version = "0.1.0"
+description = ""
+requires-python = ">=3.11, <4"
+dependencies = [
+    "pyyaml>=6.0.3",
+    "cml-schemas==2.1.0",
+    "cml-conversion-helpers==0.3.0",
+]
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",

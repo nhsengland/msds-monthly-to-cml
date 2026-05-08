@@ -76,6 +76,7 @@ def main():
     # that belong to each schema, which leaves us with two new dataframes, one for each table.
     dimensions_schema = pandas_schemas.create_dimensions_schema(config["dimensions"])
     df_dimensions = pandas_schemas.select_from_schema(df_maternity, dimensions_schema)
+    df_dimensions = df_dimensions.drop_duplicates()
     df_metric = pandas_schemas.select_from_schema(df_maternity, pandas_schemas.METRIC_SCHEMA)
     logger.info(f"created df_metric and df_dimensions")
 

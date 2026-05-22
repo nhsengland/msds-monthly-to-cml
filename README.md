@@ -13,23 +13,26 @@ The pipeline takes the MSDS data in a tidy (long) format, applies a series of co
 ## Prerequisites
 
 - Python >= 3.11
-- [Poetry](https://python-poetry.org/) for dependency management
 
 ---
 
 ## Getting Started
 
-### Installation
+### Installation (Poetry)
 
 If you load in Codespaces, the relevant packages should install automatically - it may take a few minutes!
-
-**Option A: Using Poetry**
 
 ```bash
 poetry install
 ```
 
-**Option B: Using pip**
+To activate the environment:
+
+```bash
+eval $(poetry env activate)
+```
+
+### Installation (RDS4)
 
 ```bash
 python -m venv .venv
@@ -43,17 +46,13 @@ For development (editable install with test dependencies):
 pip install -e ".[dev]"
 ```
 
-### Running the pipeline
-
-Activate your environment and run the script:
+To activate the environment:
 
 ```bash
-# If using Poetry:
-eval $(poetry env activate)
-
-# If using pip/venv:
 source .venv/bin/activate
 ```
+
+### Running the pipeline
 
 ```bash
 python create_cml_tables.py

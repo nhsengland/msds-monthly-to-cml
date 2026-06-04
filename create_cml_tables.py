@@ -119,6 +119,7 @@ def main():
         prefix="",
         sep="_"
     )
+    df_maternity["metric_id"] = df_maternity["metric_id"].str.replace(' ', '_')
 
     logger.info("  running add_lit_col")
     df_maternity = processing.add_lit_col(

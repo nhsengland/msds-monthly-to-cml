@@ -30,15 +30,132 @@ def main():
     df_maternity = pd.read_csv(config['path_to_source_data'])
     logger.info(f"Loaded source data from: {config['path_to_source_data']}.")
 
-    # loop through the processing functions defined in the config
-    logger.info(f"running functions defined in config...")
-    for processing_func_config in config["processing_funcs"]:
-        logger.info(f"   running {processing_func_config['name']}")
-        processing_func = processing.PROCESSING_FUNC_REGISTRY[processing_func_config["name"]]
-        df_maternity = processing_func(df_maternity, **processing_func_config["params"])
-    logger.info(f"done!")
 
-    # create the columns needed for the dimensions table
+    logger.info("running processing functions...")
+    logger.info("  running move_attributes_to_new_dimension")
+    df_maternity = processing.move_attributes_to_new_dimension(
+        df_maternity,
+        source_col_name="Org_Code",
+        source_col_fill_value="england",
+        new_col_name="mbrrace_grouping",
+        new_col_fill_value="no_mbrrace_grouping_filter",
+        attributes_to_move=[
+            "Group 1. Level 3 NICU & NS",
+            "Group 2. Level 3 NICU",
+            "Group 3. 4,000 or more",
+            "Group 4. 2,000 - 3,999",
+            "Group 5. Under 2,000"
+        ]
+    )
+
+    logger.info("  running replace_col_values")
+    df_maternity = processing.replace_col_values(
+        df_maternity,
+        col_name="Org_Code",
+        value_mappings={"ALL": "england"}
+    )
+
+    logger.info("  running rename_cols")
+    df_maternity = processing.rename_cols(
+        df_maternity,
+        col_name_mappings={
+            "Org_Code": "location_id",
+            "Org_Level": "location_type",
+            "Final_value": "metric_value",
+            "ReportingPeriodStartDate": "reporting_period_start_datetime",
+            "ReportingPeriodEndDate": "last_record_timestamp"
+        }
+    )
+
+    logger.info("  running replace_col_values")
+    df_maternity = processing.replace_col_values(
+        df_maternity,
+        col_name="location_type",
+        value_mappings={
+            "Booking Site": "nhs-trust-site",
+            "Delivery Site": "nhs-trust-site",
+            "Local Authority of Residence": "local_authority",
+            "Local Maternity System": "nhs-icb",
+            "MBRRACE Grouping": "nhs-country",
+            "National": "nhs-country",
+            "NHS England (Region)": "nhs-region",
+            "Provider": "nhs-trust",
+            "SubICB of Responsibility": "nhs-sub-icb-location"
+        }
+    )
+
+    logger.info("  running cast_date_col_to_timestamp")
+    df_maternity = processing.cast_date_col_to_timestamp(
+        df_maternity,
+        col_name="reporting_period_start_datetime"
+    )
+
+    logger.info("  running cast_date_col_to_timestamp")
+    df_maternity = processing.cast_date_col_to_timestamp(
+        df_maternity,
+        col_name="last_record_timestamp"
+    )
+
+
+    logger.info("  running add_lit_col")
+    df_maternity = processing.add_lit_col(
+        df_maternity,
+        col_name="reporting_grain",
+        col_value="monthly"
+    )
+
+    logger.info("  running create_uuid_col")
+    df_maternity = processing.create_uuid_col(
+        df_maternity,
+        col_name="datapoint_id",
+        length=32
+    )
+
+    logger.info("  running concat_cols")
+    df_maternity = processing.concat_cols(
+        df_maternity,
+        new_col_name="metric_id",
+        cols_to_concat=["Dimension", "Count_Of"],
+        prefix="",
+        sep="_"
+    )
+    df_maternity["metric_id"] = df_maternity["metric_id"].str.replace(' ', '_')
+
+    logger.info("  running add_lit_col")
+    df_maternity = processing.add_lit_col(
+        df_maternity,
+        col_name="publication_datetime",
+        col_value=config["publication_date"]
+    )
+
+    logger.info("  running cast_date_col_to_timestamp")
+    df_maternity = processing.cast_date_col_to_timestamp(
+        df_maternity,
+        col_name="publication_datetime"
+    )
+
+    logger.info("  running add_lit_col")
+    df_maternity = processing.add_lit_col(
+        df_maternity,
+        col_name="last_ingest_timestamp",
+        col_value=config["last_ingest_timestamp"]
+    )
+
+    logger.info("  running cast_date_col_to_timestamp")
+    df_maternity = processing.cast_date_col_to_timestamp(
+        df_maternity,
+        col_name="last_ingest_timestamp"
+    )
+
+    logger.info("  running add_lit_col")
+    df_maternity = processing.add_lit_col(
+        df_maternity,
+        col_name="additional_metric_values",
+        col_value=None
+    )
+    logger.info("  done!")
+
+    logger.info("  creating dimension cohorts")
     df_maternity = dimension_cohorts.create_dimension_columns(
         df_maternity,
         "Dimension",

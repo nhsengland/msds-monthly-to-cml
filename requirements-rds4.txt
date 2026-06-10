@@ -1,0 +1,6 @@
+-e ../cml-conversion-helpers
+-e ../cml-schemas
+pyyaml>=6.0.0
+pytest>=8.0
+pytest-html>=3.1.1
+-e .

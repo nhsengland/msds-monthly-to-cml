@@ -18,21 +18,11 @@ The pipeline takes the MSDS data in a tidy (long) format, applies a series of co
 
 ## Getting Started
 
-### Installation (Poetry)
+### Installation
 
-If you load in Codespaces, the relevant packages should install automatically - it may take a few minutes!
+#### Outside RDS4, or in RDS4 but using the internal package repository
 
-```bash
-poetry install
-```
-
-To activate the environment:
-
-```bash
-eval $(poetry env activate)
-```
-
-### Installation (RDS4)
+If you're in RDS4, remember to configure pip to look at the internal package repository (see guidance on Confluence).
 
 ```bash
 python -m venv .venv
@@ -40,19 +30,45 @@ source .venv/bin/activate
 pip install .
 ```
 
-For development (editable install with test dependencies):
+#### In RDS4 - to use local clones of the CML repos
+
+First clone this project and the two repos to the same folder as this project is in:
+
+```bash
+git clone https://<user_name>:<token>@nhsd-git.digital.nhs.uk/data-services/analytics-service/cml/msds-monthly-to-cml.git
+git clone https://<user_name>:<token>@nhsd-git.digital.nhs.uk/data-services/analytics-service/cml/cml-conversion-helpers.git
+git clone https://<user_name>:<token>@nhsd-git.digital.nhs.uk/data-services/analytics-service/cml/cml-schemas.git
+```
+
+So your folder will look something like this:
+
+```
+my_projects/
+|---msds-monthly-to-cml/ 
+|---cml-schemas/
+|---cml-conversion-helpers
+```
+
+Then install the packages:
+
+```bash
+cd msds-monthly-to-cml
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-rds4.txt
+```
+
+#### For development (editable install with test dependencies):
 
 ```bash
 pip install -e ".[dev]"
 ```
 
-To activate the environment:
-
-```bash
-source .venv/bin/activate
-```
+This installs pytest.
 
 ### Running the pipeline
+
+Update the config as described below, then run:
 
 ```bash
 python create_cml_tables.py
@@ -112,7 +128,7 @@ The `Dimension` column identifies which dimension the row belongs to, and the at
 
 ## Output Format
 
-Two CSVs are written to `data_out/`:
+Two CSVs are written to wherever you specify in the config - you can use the `data_out` folder, or somewhere else if you want:
 
 ### Metric table (`data_out/metric.csv`)
 

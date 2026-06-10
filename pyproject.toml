@@ -1,30 +1,16 @@
-[tool.poetry]
-name = "maternity-services-statistics-to-cml"
-version = "0.1.0"
-description = ""
-authors = ["Data Science Skilled team <datascience@nhs.net>"]
-readme = "README.md"
-packages = [{include = "msds_monthly_to_cml", from = "src"}]
-
-[tool.poetry.dependencies]
-python = ">=3.11, <4"
-pyyaml = ">=6.0.3"
-cml-schemas = "2.1.0"
-cml-conversion-helpers = "0.3.0"
-
-[tool.poetry.group.dev.dependencies]
-pytest = ">=8.0"
-pytest-html = ">=3.1.1"
-
 [project]
 name = "maternity-services-statistics-to-cml"
 version = "0.1.0"
 description = ""
-requires-python = ">=3.11, <4"
+readme = "README.md"
+authors = [
+    { name = "Data Science Skilled team", email = "datascience@nhs.net" }
+]
+requires-python = ">=3.10,<4"
 dependencies = [
-    "pyyaml>=6.0.3",
-    "cml-schemas==2.1.0",
-    "cml-conversion-helpers==0.3.0",
+    "pyyaml>=6.0.0",
+    "cml-schemas>=2.2.0",
+    "cml-conversion-helpers>=0.4.0",
 ]
 
 [project.optional-dependencies]

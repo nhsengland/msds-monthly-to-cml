@@ -5,45 +5,44 @@ import shutil
 import os
 import io
 from pathlib import Path
-import requests
+import sys
+import pandas as pd
+import pyodbc
 
 
-def download_zip_from_url(
-    zip_file_url : str, 
-    overwrite : bool = False, 
-    output_path : str = None
-) -> str:
-    """Downloads a zipfile from the specified URL
-    
-    Parameters
-    ----------
-    zip_file_url : str
-        The url string of where the zipfile is held
-    overwrite : bool
-        if True, then running this again will overwrite existing files of the same name, otherwise 
-        it will not.
-    output_path : str
-        Where you want the zip to be saved to - if left as "None" then it will be saved to 
-        "data/{filename}"
+def get_sql_connection(server, database):
+    """Establishes and returns a connection to the SQL Server database.
 
-    Returns
-    ----------
-    output_path : str
-
+    Modify the connection string variables below to match your environment.
     """
-    filename = Path(zip_file_url).name
-    if output_path is None:
-        output_path = Path(f"data_in/{filename}")
-    else:
-        output_path = Path(f"{output_path}/{filename}")
-    if output_path.exists():
-        if overwrite:
-            shutil.rmtree(output_path, ignore_errors=False, onerror=None)
-        else:
-            raise Exception(f"The zipfile already exists at: {output_path}")
 
-    response = requests.get(zip_file_url, stream=True,timeout=3600)
-    downloaded_zip = zipfile.ZipFile(io.BytesIO(response.content))
-    downloaded_zip.extractall(output_path)
+    conn_str = (
+        f"DRIVER=ODBC Driver 17 for SQL Server;"
+        f"SERVER={server};"
+        f"DATABASE={database};"
+        f"Trusted_Connection=yes;"
+    )
+    try:
+        conn = pyodbc.connect(conn_str)
+        return conn
+    except Exception as e:
+        print(f"Error connecting to database: {e}", file=sys.stderr)
+        raise
 
-    return str(output_path)
+
+def run_sql_query(query: str, conn) -> pd.DataFrame:
+    """Connects to the database, executes a SQL query, returns the data as a
+
+    Pandas DataFrame, and safely closes the connection.
+    """
+    try:
+        df = pd.read_sql(query, conn)
+        return df
+
+    except Exception as e:
+        print(f"Error executing query: {e}", file=sys.stderr)
+        raise
+
+    finally:
+        if conn:
+            conn.close()

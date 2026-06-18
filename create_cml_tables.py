@@ -2,29 +2,38 @@ import logging
 import timeit
 from datetime import datetime
 from pathlib import Path
+import os
 
 import pandas as pd
+from dotenv import load_dotenv
 
 from cml_conversion_helpers.pandas_functions import processing
 from cml_conversion_helpers.pandas_functions import dimension_cohorts
 from cml_schemas import pandas_schemas
 
+from msds_monthly_to_cml.data_ingestion import get_data
 from msds_monthly_to_cml.utils import file_paths
 from msds_monthly_to_cml.utils import logging_config
-
+from msds_monthly_to_cml.processing import add_cols
+from msds_monthly_to_cml.queries import reference_data
 
 logger = logging.getLogger(__name__)
 
 def main():
     
     # load config - here we load our project's parameters from the config file.
+    logger.info(f"Getting ready to run pipeline....")
     config = file_paths.get_config("config.yaml")
+    logger.info(f"  config loaded")
+    load_dotenv()
+    logger.info(f"  environment variables loaded")
 
     # configure logging - we can save information to log files which can be useful for debugging with logger.info()
     logging_config.configure_logging(config['log_dir'])
-    logger.info(f"Configured logging with log folder: {config['log_dir']}.")
-    logger.info(f"Logging the config settings:\n\n\t{config}\n")
-    logger.info(f"Starting run at:\t{datetime.now().time()}")
+    logger.info(f"  configured logging with log folder: {config['log_dir']}.")
+    logger.info(f"  logging the config settings:\n\n\t{config}\n")
+    logger.info(f"  starting run at:\t{datetime.now().time()}")
+    logger.info(f"  Ready!")
 
     # Loading data from CSV as data frame
     df_maternity = pd.read_csv(config['path_to_source_data'])
@@ -48,12 +57,40 @@ def main():
         ]
     )
 
+    logger.info("  running replace_ons_with_ods")
+    conn = get_data.get_sql_connection(os.getenv("SERVER"), "DSS_CORPORATE")
+    logger.info(f"    created connection to {os.getenv('SERVER')}")
+    df_ons_to_ods_map = get_data.run_sql_query(reference_data.ons_to_ods_map, conn)
+    ons_to_ods_map = dict(zip(df_ons_to_ods_map["Org_Code"], df_ons_to_ods_map["ods_code"]))
+    df_maternity = processing.replace_col_values(
+        df_maternity,
+        col_name="Org_Code",
+        value_mappings=ons_to_ods_map
+    )
+
     logger.info("  running replace_col_values")
     df_maternity = processing.replace_col_values(
         df_maternity,
         col_name="Org_Code",
         value_mappings={"ALL": "england"}
     )
+
+    logger.info("  running add_lit_col")
+    df_maternity = processing.add_lit_col(
+        df_maternity,
+        col_name="additional_metric_values",
+        col_value=None
+    )
+
+    logger.info("  adding locations to additional_metric_values")
+    df_maternity["additional_metric_values"] = df_maternity.apply(
+        lambda row: processing.add_json_key(
+            cell=row["additional_metric_values"],
+            key="Org_Level",
+            value=row["Org_Level"],
+        ),
+        axis=1,
+    )  
 
     logger.info("  running rename_cols")
     df_maternity = processing.rename_cols(
@@ -64,23 +101,6 @@ def main():
             "Final_value": "metric_value",
             "ReportingPeriodStartDate": "reporting_period_start_datetime",
             "ReportingPeriodEndDate": "last_record_timestamp"
-        }
-    )
-
-    logger.info("  running replace_col_values")
-    df_maternity = processing.replace_col_values(
-        df_maternity,
-        col_name="location_type",
-        value_mappings={
-            "Booking Site": "nhs-trust-site",
-            "Delivery Site": "nhs-trust-site",
-            "Local Authority of Residence": "local_authority",
-            "Local Maternity System": "nhs-icb",
-            "MBRRACE Grouping": "nhs-country",
-            "National": "nhs-country",
-            "NHS England (Region)": "nhs-region",
-            "Provider": "nhs-trust",
-            "SubICB of Responsibility": "nhs-sub-icb-location"
         }
     )
 
@@ -95,7 +115,6 @@ def main():
         df_maternity,
         col_name="last_record_timestamp"
     )
-
 
     logger.info("  running add_lit_col")
     df_maternity = processing.add_lit_col(
@@ -147,15 +166,17 @@ def main():
         col_name="last_ingest_timestamp"
     )
 
-    logger.info("  running add_lit_col")
-    df_maternity = processing.add_lit_col(
-        df_maternity,
-        col_name="additional_metric_values",
-        col_value=None
-    )
+    conn = get_data.get_sql_connection(os.getenv("SERVER"), "DSS_CORPORATE")
+    logger.info(f"    created connection to {os.getenv('SERVER')}")
+    logger.info(f"  adding location_types from reference data")
+    df_org_code_to_type_map = get_data.run_sql_query(reference_data.org_code_to_type_map, conn)
+    logger.info(f"  ran org_code_to_type_map SQL query on server and returned result")
+    df_maternity = add_cols.add_location_type_id_col(df_maternity, df_org_code_to_type_map)
+    logger.info(f"  added location_types")
+
     logger.info("  done!")
 
-    logger.info("  creating dimension cohorts")
+    logger.info("creating dimension cohorts..")
     df_maternity = dimension_cohorts.create_dimension_columns(
         df_maternity,
         "Dimension",

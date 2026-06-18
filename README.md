@@ -12,7 +12,7 @@ The pipeline takes the MSDS data in a tidy (long) format, applies a series of co
 
 ## Prerequisites
 
-- Python >= 3.11
+- Python >= 3.10
 
 ---
 

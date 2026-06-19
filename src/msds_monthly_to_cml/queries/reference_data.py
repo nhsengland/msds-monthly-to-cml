@@ -16,7 +16,6 @@ with cte (location_id, org_type_description) as (
 			when org_type_description = 'PHARMACY SITE' then 'pharmacy-site'
 			when org_type_description = 'PRESCRIBING COST CENTRE' then 'prescribing-cost-centre'
 			when org_type_description = 'PRIMARY CARE TRUST' then 'primary_care_trust'
-			when org_type_description = 'PRIMARY CARE TRUST SITE' then 'PRIMARY CARE TRUST SITE'
 			when org_type_description = 'PRISON' then 'prison'
 			when org_type_description = 'NON-NHS ORGANISATION' then 'non-nhs-org'
 			when org_type_description = 'LOCAL HEALTH BOARD' then 'welsh_local_health_board'

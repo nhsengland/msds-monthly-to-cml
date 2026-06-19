@@ -14,8 +14,10 @@ from cml_schemas import pandas_schemas
 from msds_monthly_to_cml.data_ingestion import get_data
 from msds_monthly_to_cml.utils import file_paths
 from msds_monthly_to_cml.utils import logging_config
+from msds_monthly_to_cml.utils import utils
 from msds_monthly_to_cml.processing import add_cols
 from msds_monthly_to_cml.queries import reference_data
+
 
 logger = logging.getLogger(__name__)
 
@@ -222,8 +224,9 @@ def main():
     logger.info(f"writing data to csv...")
     output_dir = Path(config['output_dir'])
     output_dir.mkdir(parents=True, exist_ok=True)
-    df_metric.to_csv(output_dir / "metric.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
-    df_dimensions.to_csv(output_dir / "dimensions.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
+    filename_date_suffix = utils.get_reporting_period_string(df_metric)
+    df_metric.to_csv(output_dir / f"metric_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
+    df_dimensions.to_csv(output_dir / f"dimensions_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
     logger.info(f"   done!")
 
 if __name__ == "__main__":

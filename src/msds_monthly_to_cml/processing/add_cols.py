@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import numpy as np
 
@@ -39,3 +41,39 @@ def add_location_type_id_col(
 
     return df_result
     
+
+def filter_out_existing_dimensions(
+    df_dimensions: pd.DataFrame,
+    output_path: str
+) -> pd.DataFrame:
+    """
+    Filters out dimensions from df_dimensions that already exist in CSV files
+    with "dimension" in their filename in the output_path directory.
+
+    Args:
+        df_dimensions: DataFrame containing dimension data with a 'dimension_id' column
+        output_path: Path to directory containing CSV files to check against
+
+    Returns:
+        Filtered DataFrame with only new dimensions
+    """
+    dimension_files = [
+        f for f in os.listdir(output_path)
+        if f.endswith('.csv') and 'dimension' in f.lower()
+    ]
+
+    existing_ids = set()
+
+    for file in dimension_files:
+        file_path = os.path.join(output_path, file)
+        try:
+            df = pd.read_csv(file_path)
+            if 'dimension_id' in df.columns:
+                existing_ids.update(df['dimension_id'].dropna().unique())
+        except Exception as e:
+            print(f"Warning: Could not read file {file}: {str(e)}")
+            continue
+
+    df_filtered = df_dimensions[~df_dimensions['dimension_id'].isin(existing_ids)]
+
+    return df_filtered

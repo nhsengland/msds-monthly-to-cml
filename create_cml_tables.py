@@ -15,7 +15,7 @@ from msds_monthly_to_cml.data_ingestion import get_data
 from msds_monthly_to_cml.utils import file_paths
 from msds_monthly_to_cml.utils import logging_config
 from msds_monthly_to_cml.utils import utils
-from msds_monthly_to_cml.processing import add_cols
+from msds_monthly_to_cml.processing import msds_functions
 from msds_monthly_to_cml.queries import reference_data
 
 
@@ -173,7 +173,7 @@ def main():
     logger.info(f"  adding location_types from reference data")
     df_org_code_to_type_map = get_data.run_sql_query(reference_data.org_code_to_type_map, conn)
     logger.info(f"  ran org_code_to_type_map SQL query on server and returned result")
-    df_maternity = add_cols.add_location_type_id_col(df_maternity, df_org_code_to_type_map)
+    df_maternity = msds_functions.add_location_type_id_col(df_maternity, df_org_code_to_type_map)
     logger.info(f"  added location_types")
 
     logger.info("  done!")
@@ -217,7 +217,7 @@ def main():
     dimensions_schema = pandas_schemas.create_dimensions_schema(config["dimensions"])
     df_dimensions = pandas_schemas.select_from_schema(df_maternity, dimensions_schema)
     df_dimensions = df_dimensions.drop_duplicates()
-    df_dimensions = add_cols.filter_out_existing_dimensions(df_dimensions, config['output_dir'])
+    df_dimensions = msds_functions.filter_out_existing_dimensions(df_dimensions, config['output_dir'])
     df_metric = pandas_schemas.select_from_schema(df_maternity, pandas_schemas.METRIC_SCHEMA)
     logger.info(f"created df_metric and df_dimensions")
 

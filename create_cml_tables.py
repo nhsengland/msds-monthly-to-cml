@@ -44,7 +44,7 @@ def main():
 
     logger.info("running processing functions...")
     logger.info("  running move_attributes_to_new_dimension")
-    df_maternity = processing.move_attributes_to_new_dimension(
+    df_maternity = dimension_cohorts.move_attributes_to_new_dimension(
         df_maternity,
         source_col_name="Org_Code",
         source_col_fill_value="england",
@@ -196,10 +196,11 @@ def main():
         config["dimensions"],
         "dimension_count"
     )
-    df_maternity = dimension_cohorts.create_md5_hash_col(
+    df_maternity = processing.create_md5_hash_col_with_exceptions(
         df_maternity,
         config["dimensions"],
-        "dimension_id"
+        "dimension_id",
+        ["all_", "no_"]
     )
     df_maternity = processing.concat_cols(
         df_maternity,
@@ -222,8 +223,6 @@ def main():
     logger.info(f"created df_metric and df_dimensions")
 
     
-
-
     # Creating generated timestamps
     generated_ts = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
     df_metric = processing.add_lit_col(
@@ -246,9 +245,13 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     reporting_period = utils.get_reporting_period_string(df_metric)
     filename_date_suffix = "__" + reporting_period + "__" + generated_ts
+    logger.info(f"  saving metric data...")
     df_metric.to_csv(output_dir / f"metric_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
+    logger.info(f"  done!...")
+    logger.info(f"  saving dimension data...")
     df_dimensions.to_csv(output_dir / f"dimensions_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
-    logger.info(f"   done!")
+    logger.info(f"  done!...")
+    logger.info(f"All done!")
 
 if __name__ == "__main__":
     print(f"Running create_cml_tables script")

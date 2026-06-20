@@ -217,8 +217,12 @@ def main():
     dimensions_schema = pandas_schemas.create_dimensions_schema(config["dimensions"])
     df_dimensions = pandas_schemas.select_from_schema(df_maternity, dimensions_schema)
     df_dimensions = df_dimensions.drop_duplicates()
+    df_dimensions = add_cols.filter_out_existing_dimensions(df_dimensions, config['output_dir'])
     df_metric = pandas_schemas.select_from_schema(df_maternity, pandas_schemas.METRIC_SCHEMA)
     logger.info(f"created df_metric and df_dimensions")
+
+    
+
 
     # Creating generated timestamps
     generated_ts = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")

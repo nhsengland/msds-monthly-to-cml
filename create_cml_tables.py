@@ -220,11 +220,28 @@ def main():
     df_metric = pandas_schemas.select_from_schema(df_maternity, pandas_schemas.METRIC_SCHEMA)
     logger.info(f"created df_metric and df_dimensions")
 
+    # Creating generated timestamps
+    generated_ts = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
+    df_metric = processing.add_lit_col(
+        df_metric,
+        col_name="generation_ts",
+        col_value=generated_ts
+    )
+    df_metric = processing.concat_cols(df_metric, "datapoint_id_generation_ts", ["datapoint_id", "generation_ts"], sep="__")
+    df_dimensions = processing.add_lit_col(
+        df_dimensions,
+        col_name="generation_ts",
+        col_value=generated_ts
+    )
+    df_dimensions = processing.concat_cols(df_dimensions, "dimension_id_generation_ts", ["dimension_id", "generation_ts"], sep="__")
+    logger.info(f"added generation_ts and pk")
+
     # Then we can save these to CSV
     logger.info(f"writing data to csv...")
     output_dir = Path(config['output_dir'])
     output_dir.mkdir(parents=True, exist_ok=True)
-    filename_date_suffix = utils.get_reporting_period_string(df_metric)
+    reporting_period = utils.get_reporting_period_string(df_metric)
+    filename_date_suffix = "__" + reporting_period + "__" + generated_ts
     df_metric.to_csv(output_dir / f"metric_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
     df_dimensions.to_csv(output_dir / f"dimensions_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
     logger.info(f"   done!")

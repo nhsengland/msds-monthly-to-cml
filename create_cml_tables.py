@@ -224,7 +224,7 @@ def main():
 
     
     # Creating generated timestamps
-    generated_ts = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
+    generated_ts = datetime.now()
     df_metric = processing.add_lit_col(
         df_metric,
         col_name="generation_ts",
@@ -244,7 +244,7 @@ def main():
     output_dir = Path(config['output_dir'])
     output_dir.mkdir(parents=True, exist_ok=True)
     reporting_period = utils.get_reporting_period_string(df_metric)
-    filename_date_suffix = "__" + reporting_period + "__" + generated_ts
+    filename_date_suffix = "__" + reporting_period + "__" + generated_ts.strftime("%Y-%m-%d--%H-%M-%S")
     logger.info(f"  saving metric data...")
     df_metric.to_csv(output_dir / f"metric_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
     logger.info(f"  done!...")

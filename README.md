@@ -66,9 +66,27 @@ pip install -e ".[dev]"
 
 This installs pytest.
 
+### Setup
+
+#### Config
+
+Rename the config-example.yaml file to config.yaml, and then update it as needed (see the section below).
+
+You need to do this because config.yaml is in the .gitignore, meaning you can change the settings without git tracking the changes.
+
+#### .env
+
+Create a file called .env (use VS Code - Windows can be a bit fussy about creating files that are only extensions).
+
+This file needs to contain the name of the SQL Server that contains the reference data under the variable name `SERVER`, e.g.:
+
+```bash
+SERVER="<name of server>"
+```
+
 ### Running the pipeline
 
-Update the config as described below, then run:
+OK, now you should be ready to go! Just run:
 
 ```bash
 python create_cml_tables.py

@@ -37,6 +37,10 @@ def main():
     logger.info(f"  starting run at:\t{datetime.now().time()}")
     logger.info(f"  Ready!")
 
+    metric_status = msds_functions.get_metric_status(config)
+    logger.info(f"Metric status identified as:\t{metric_status}")
+    
+
     # Loading data from CSV as data frame
     df_maternity = pd.read_csv(config['path_to_source_data'])
     logger.info(f"Loaded source data from: {config['path_to_source_data']}.")
@@ -138,7 +142,8 @@ def main():
         new_col_name="metric_id",
         cols_to_concat=["Dimension", "Count_Of"],
         prefix="",
-        sep="_"
+        sep="_",
+        value_suffix=f"{metric_status}"
     )
     df_maternity["metric_id"] = df_maternity["metric_id"].str.replace(' ', '_')
 
@@ -244,7 +249,7 @@ def main():
     output_dir = Path(config['output_dir'])
     output_dir.mkdir(parents=True, exist_ok=True)
     reporting_period = utils.get_reporting_period_string(df_metric)
-    filename_date_suffix = "__" + reporting_period + "__" + generated_ts.strftime("%Y-%m-%d--%H-%M-%S")
+    filename_date_suffix = "__" + reporting_period + "__" + f"{metric_status}" + "__" + generated_ts.strftime("%Y-%m-%d--%H-%M-%S")
     logger.info(f"  saving metric data...")
     df_metric.to_csv(output_dir / f"metric_{filename_date_suffix}.csv", index=False, date_format='%Y-%m-%d %H:%M:%S')
     logger.info(f"  done!...")

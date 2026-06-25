@@ -1,7 +1,12 @@
 import os
+import sys
+import logging
+from typing import Optional
 
 import pandas as pd
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 def add_location_type_id_col(
@@ -77,3 +82,34 @@ def filter_out_existing_dimensions(
     df_filtered = df_dimensions[~df_dimensions['dimension_id'].isin(existing_ids)]
 
     return df_filtered
+
+
+def get_metric_status(config: dict) -> str:
+    """
+    Determines whether data is 'act' (actual/final) or 'prov' (provisional).
+
+    Args:
+        config: dict with a required 'status' key.
+
+    Returns:
+        'prov' if status is 'prov' or 'provisional' (case-insensitive).
+        'act' if status is 'actual' or 'final' (case-insensitive).
+
+    Raises:
+        KeyError:   if 'status' is missing from config.
+        ValueError: if 'status' is an unrecognised value.
+    """
+    if "status" not in config:
+        raise KeyError("'status' is missing from config.")
+
+    status = config["status"].strip().lower()
+
+    if status in ("prov", "provisional"):
+        return "prov"
+    if status in ("actual", "final"):
+        return "act"
+
+    raise ValueError(
+        f"Unrecognised status value: {config['status']!r}. "
+        f"Expected one of: 'prov', 'provisional', 'actual', 'final'."
+    )

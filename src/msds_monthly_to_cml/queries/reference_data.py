@@ -15,7 +15,7 @@ with cte (location_id, org_type_description) as (
 			when org_type_description = 'PHARMACY' then 'pharmacy'
 			when org_type_description = 'PHARMACY SITE' then 'pharmacy-site'
 			when org_type_description = 'PRESCRIBING COST CENTRE' then 'prescribing-cost-centre'
-			when org_type_description = 'PRIMARY CARE TRUST' then 'primary_care_trust'
+			when org_type_description = 'PRIMARY CARE TRUST' then 'invalid'
 			when org_type_description = 'PRISON' then 'prison'
 			when org_type_description = 'NON-NHS ORGANISATION' then 'non-nhs-org'
 			when org_type_description = 'LOCAL HEALTH BOARD' then 'welsh_local_health_board'
@@ -25,7 +25,8 @@ with cte (location_id, org_type_description) as (
 			when org_type_description = 'INDEPENDENT SECTOR H/C PROVIDER SITE' then 'independent-provider-site'
 			when org_type_description = 'GENERAL MEDICAL PRACTITIONER' then 'nhs-gp'
 			when org_type_description = 'STRATEGIC PARTNERSHIP' then 'nhs-icb'
-			else null
+			when org_code in ('ZZ201', 'ZZ888', 'ZZ203', 'ZZ777') then 'non-place-code'
+			else 'invalid'
 		end org_type_description
 	from
 		dss_corporate.dbo.org_daily

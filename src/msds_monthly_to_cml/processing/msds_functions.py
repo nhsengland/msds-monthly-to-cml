@@ -28,6 +28,7 @@ def add_location_type_id_col(
         df_result["location_type"] == "Local Maternity System",
         df_result["location_type"] == "Provider",
         df_result["location_type"] == "MBRRACE Grouping",
+        df_result["location_id"].isin(['ZZ201', 'ZZ888', 'ZZ203', 'ZZ777']),
         df_result["org_type_description"].notna(),
     ]
     outputs = [
@@ -38,9 +39,10 @@ def add_location_type_id_col(
         "nhs-icb",
         "nhs-trust",
         "england",
+        "non-place-code",
         df_result["org_type_description"],
     ]
-    df_result["location_type"] = np.select(conditions, outputs, default=None)
+    df_result["location_type"] = np.select(conditions, outputs, default='invalid')
 
     df_result.drop(columns=["org_type_description"], inplace=True)
 

@@ -39,7 +39,7 @@ def main():
 
     metric_status = msds_functions.get_metric_status(config)
     logger.info(f"Metric status identified as:\t{metric_status}")
-    
+
 
     # Loading data from CSV as data frame
     df_maternity = pd.read_csv(config['path_to_source_data'])
@@ -146,6 +146,13 @@ def main():
         value_suffix=f"{metric_status}"
     )
     df_maternity["metric_id"] = df_maternity["metric_id"].str.replace(' ', '_')
+    logger.info("  running replace_col_values")
+    df_maternity = processing.replace_col_values(
+        df_maternity,
+        col_name="metric_id",
+        value_mappings=config["metric_id_replacements"]
+    )
+
 
     logger.info("  running add_lit_col")
     df_maternity = processing.add_lit_col(

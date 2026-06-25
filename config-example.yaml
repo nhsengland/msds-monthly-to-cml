@@ -3,6 +3,7 @@ publication_date: &publication_date "01/12/2026"
 last_ingest_timestamp: &last_ingest_timestamp "15/12/2026"
 path_to_source_data: "data_in/msds-sep2025-exp-data.csv"
 output_dir: "data_out"
+status: "final"
 log_dir: "logs/"
 dimensions: &dimensions
   - mbrrace_grouping

@@ -74,6 +74,8 @@ Rename the config-example.yaml file to config.yaml, and then update it as needed
 
 You need to do this because config.yaml is in the .gitignore, meaning you can change the settings without git tracking the changes.
 
+> Important! Make sure you correctly set the status to "final" or "provisional"
+
 #### .env
 
 Create a file called .env (use VS Code - Windows can be a bit fussy about creating files that are only extensions).
@@ -112,6 +114,7 @@ Key fields:
 | `last_ingest_timestamp` | Timestamp of the last data ingest |
 | `path_to_source_data` | Path to the input CSV file |
 | `output_dir` | Directory where output CSVs are written |
+| `status` | Set to "final" or "provisional". The metric_id will be set accordingly. |
 | `log_dir` | Directory where log files are written |
 | `dimensions` | List of all dimension names present in the source data |
 | `dimension_creation_exclusions` | Dimensions to exclude from the output dimensions table (e.g. `mbrrace_grouping`, which is handled as a separate column) |

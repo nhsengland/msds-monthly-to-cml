@@ -185,7 +185,11 @@ def main():
     logger.info(f"  adding location_types from reference data")
     df_org_code_to_type_map = get_data.run_sql_query(reference_data.org_code_to_type_map, conn)
     logger.info(f"  ran org_code_to_type_map SQL query on server and returned result")
-    df_maternity = msds_functions.add_location_type_id_col(df_maternity, df_org_code_to_type_map)
+    df_maternity = msds_functions.add_location_type_id_col(
+        df_maternity,
+        df_org_code_to_type_map,
+        config["non_place_codes"]
+    )
     logger.info(f"  added location_types")
 
     logger.info("  done!")

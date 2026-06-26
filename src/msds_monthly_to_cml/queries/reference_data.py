@@ -27,7 +27,6 @@ with cte (location_id, org_type_description) as (
 				when org_type_description = 'INDEPENDENT SECTOR H/C PROVIDER SITE' then 'independent-provider-site'
 				when org_type_description = 'GENERAL MEDICAL PRACTITIONER' then 'nhs-gp'
 				when org_type_description = 'STRATEGIC PARTNERSHIP' then 'nhs-icb'
-				when org_code in ('ZZ201', 'ZZ888', 'ZZ203', 'ZZ777') then 'non-place-code'
 				else null
 			end org_type_description
 		from

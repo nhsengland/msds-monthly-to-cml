@@ -40,6 +40,12 @@ dimensions: &dimensions
   - TotalDeliveries
 dimension_creation_exclusions:
   - mbrrace_grouping
+non_place_codes:
+  - ZZ201
+  - ZZ888
+  - ZZ203
+  - ZZ777
+  - ZZ999
 metric_id_replacements:
   AgeAtBookingMotherAvg_Average_over_women_act: MSMS0001_act
   AgeAtBookingMotherAvg_Average_over_women_prov: MSMS0001_prov

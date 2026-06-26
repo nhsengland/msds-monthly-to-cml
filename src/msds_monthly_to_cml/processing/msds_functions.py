@@ -10,7 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 def add_location_type_id_col(
-    df_maternity: pd.DataFrame, df_reference: pd.DataFrame
+    df_maternity: pd.DataFrame, 
+    df_reference: pd.DataFrame,
+    non_place_codes,
 ) -> pd.DataFrame:
     """Left joins reference data on 'location_id', replaces 'location_type'
     with the formats used in all_places on FDP, fills in any gaps with 
@@ -28,7 +30,7 @@ def add_location_type_id_col(
         df_result["location_type"] == "Local Maternity System",
         df_result["location_type"] == "Provider",
         df_result["location_type"] == "MBRRACE Grouping",
-        df_result["location_id"].isin(['ZZ201', 'ZZ888', 'ZZ203', 'ZZ777']),
+        df_result["location_id"].isin(non_place_codes),
         df_result["org_type_description"].notna(),
     ]
     outputs = [

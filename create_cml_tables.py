@@ -47,6 +47,9 @@ def main():
 
 
     logger.info("running processing functions...")
+    logger.info("  replacing null Org_Code values with Unknown")
+    df["Org_Code"] = df["Org_Code"].fillna("Unknown")
+
     logger.info("  running move_attributes_to_new_dimension")
     df_maternity = dimension_cohorts.move_attributes_to_new_dimension(
         df_maternity,

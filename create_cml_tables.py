@@ -48,7 +48,7 @@ def main():
 
     logger.info("running processing functions...")
     logger.info("  replacing null Org_Code values with Unknown")
-    df_maternity["Org_Code"] = df_maternity["Org_Code"].fillna("Unknown")
+    df_maternity["Org_Code"] = df_maternity["Org_Code"].fillna("null")
 
     logger.info("  running move_attributes_to_new_dimension")
     df_maternity = dimension_cohorts.move_attributes_to_new_dimension(
@@ -224,7 +224,7 @@ def main():
     df_maternity = processing.concat_cols(
         df_maternity,
         "datapoint_id",
-        ["metric_id", "dimension_id", "reporting_grain", "location_id", "reporting_period_start_datetime"],
+        ["metric_id", "dimension_id", "reporting_grain", "location_id", "location_type", "reporting_period_start_datetime"],
         prefix="",
         sep="_"
     )

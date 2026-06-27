@@ -117,3 +117,17 @@ def get_metric_status(config: dict) -> str:
         f"Unrecognised status value: {config['status']!r}. "
         f"Expected one of: 'prov', 'provisional', 'actual', 'final'."
     )
+
+def fix_location_id_unknowns(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Where location_id is the string 'null' or 'Unknown',
+    concatenate location_id and location_type with an underscore.
+    All other rows are left unchanged.
+    """
+    mask = df["location_id"].isin(["null", "Null", "Unknown", "unknown"])
+    df = df.copy()  # avoid mutating the original
+    df.loc[mask, "location_id"] = (
+        df.loc[mask, "location_id"] + "_" + df.loc[mask, "location_type"]
+    )
+    return df
+

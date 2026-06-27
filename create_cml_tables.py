@@ -113,6 +113,11 @@ def main():
         }
     )
 
+
+    logger.info("  fixing null or unknown location_id values by concatenating location_type")
+    df_maternity = msds_functions.fix_location_id_unknowns(df_maternity)
+
+
     logger.info("  running cast_date_col_to_timestamp")
     df_maternity = processing.cast_date_col_to_timestamp(
         df_maternity,
@@ -224,7 +229,7 @@ def main():
     df_maternity = processing.concat_cols(
         df_maternity,
         "datapoint_id",
-        ["metric_id", "dimension_id", "reporting_grain", "location_id", "location_type", "reporting_period_start_datetime"],
+        ["metric_id", "dimension_id", "reporting_grain", "location_id", "reporting_period_start_datetime"],
         prefix="",
         sep="_"
     )

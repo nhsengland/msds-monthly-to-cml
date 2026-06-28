@@ -254,13 +254,13 @@ def main():
         col_name="generation_ts",
         col_value=generated_ts
     )
-    df_metric = processing.concat_cols(df_metric, "datapoint_id_generation_ts", ["datapoint_id", "generation_ts"], sep="__")
+    df_metric = processing.concat_cols(df_metric, "id_ts", ["datapoint_id", "generation_ts"], sep="__")
     df_dimensions = processing.add_lit_col(
         df_dimensions,
         col_name="generation_ts",
         col_value=generated_ts
     )
-    df_dimensions = processing.concat_cols(df_dimensions, "dimension_id_generation_ts", ["dimension_id", "generation_ts"], sep="__")
+    df_dimensions = processing.concat_cols(df_dimensions, "id_ts", ["dimension_id", "generation_ts"], sep="__")
     logger.info(f"added generation_ts and pk")
 
     # Then we can save these to CSV
